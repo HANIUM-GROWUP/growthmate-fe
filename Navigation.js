@@ -40,7 +40,6 @@ function Navigation() {
     return (
         <NavigationContainer>
             <StackScreen>
-                <BottomStack/>
             </StackScreen>
         </NavigationContainer>
     );

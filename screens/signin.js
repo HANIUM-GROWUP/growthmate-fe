@@ -19,7 +19,7 @@ import { getAuth, GoogleAuthProvider, signInWithCredential, onAuthStateChanged }
 import * as AuthSession from 'expo-auth-session';
 
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
   authDomain: "growup-394504.firebaseapp.com",
   projectId: "growup-394504",
   storageBucket: "growup-394504.appspot.com",
@@ -41,8 +41,8 @@ const Signin = (navigation) => {
 
   const url = "https://auth.expo.io/@dhdld/growup";
 const [request, response, promptAsync] = Google.useAuthRequest({
-	clientId: process.env.REACT_APP_google_clientId,
-  androidClientId: process.env.REACT_APP_google_androidClientId,
+	clientId: process.env.EXPO_PUBLIC_google_clientId,
+  androidClientId: process.env.EXPO_PUBLIC_google_androidClientId,
     redirectUri: url,
     scopes: ['openid', 'profile', 'email'],
     responseType: 'id_token',
@@ -50,8 +50,8 @@ const [request, response, promptAsync] = Google.useAuthRequest({
   /*
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest(
     {
-	clientId: process.env.REACT_APP_google_clientId,
-  androidClientId: process.env.REACT_APP_google_androidClientId,
+	clientId: process.env.EXPO_PUBLIC_google_clientId,
+  androidClientId: process.env.EXPO_PUBLIC_google_androidClientId,
     },
   );
 */
