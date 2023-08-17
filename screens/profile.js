@@ -18,7 +18,7 @@ const Profile = ({navigation, route}) => {
 
       const texting = (text) => {
         if (text.length == 0) {
-          setUsername(false);
+          //setUsername(false);
         }
         else{
         setUsername(text);
@@ -29,7 +29,7 @@ const Profile = ({navigation, route}) => {
 //      const [username, setUsername] = useState('');
       const [username, setUsername] = useState(route.params.info);
       const ChangeUsername = () => {
-        if (username=="") {
+        if (username==" ") {
           alert("닉네임을 입력해주세요.");
           setUsername(false);
         }
@@ -101,10 +101,10 @@ const Profile = ({navigation, route}) => {
         <TouchableOpacity style={{paddingTop:"2%", alignSelf:"center"}} onPress={uploadImage}>
           <Text>이미지 변경</Text>
         </TouchableOpacity>
-        
+
         <View style={{flexDirection:"row", paddingLeft:"5%", marginTop:"8%"}}>
         <Text style={{fontSize:14, alignSelf:"center",marginRight:"5%"}}>닉네임</Text>
-        <TextInput placeholder="이름을 입력하세요"  value={username} onChangeText={text => texting(text)}
+        <TextInput placeholder={username}  value={username} onChangeText={text => texting(text)}
         style={{fontSize:16, width:"60%", height:40, marginRight:"3%", backgroundColor: '#e8e8e8', borderRadius:8, padding:10}}></TextInput>
         <TouchableOpacity onPress={() => ChangeUsername()}
         style={{backgroundColor:"blue", borderRadius:10, justifyContent:"center", width:"18%"}}>

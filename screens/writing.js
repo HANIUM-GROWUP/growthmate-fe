@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, BackHandler, Image, TextInput } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, BackHandler, Image, TextInput, 
+  Keyboard, TouchableWithoutFeedback } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -27,6 +28,7 @@ const [content, setContent] = useState('');
 
   return (
     <SafeAreaView style={Styles.screen}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}> 
     <View style={Styles.container}>     
     <StatusBar style="auto" />
 
@@ -47,6 +49,7 @@ const [content, setContent] = useState('');
         style={Styles.styleContent}></TextInput>
 
     </View>
+    </TouchableWithoutFeedback>
     </SafeAreaView>
   )
 }

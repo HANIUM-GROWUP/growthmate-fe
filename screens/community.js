@@ -6,33 +6,46 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
 
+
 const Community = () => {
   const navigation = useNavigation();
-
-  const BackButton = () => {
-    navigation.navigate("Main");
-    };
     
 const writing = () => {
   navigation.navigate("Writing");
 };
 
+
+const viewPost = (id, title, body) => {
+  navigation.navigate("ViewPost", {id: id, title: title, body: body});
+}
+
 const renderItem = ({ item }) => {
+  if (item.title.length > 30) {
+    shortTitle = item.title.substring(0, 30) + "...";
+  }
+  else 
+  shortBody = item.title;
+  if (item.body.length > 70) {
+    shortBody = item.body.substring(0, 70) + "...";
+  }
+  else
+  shortBody = item.body;
+
   return (
-    <View style={{justifyContent:"center", margin: "10%"}}>
+    <View style={{justifyContent:"center", margin: "10%", marginTop:5, maxHeight:350}}>
       <View>
         <Text>user id: {item.userId}</Text>
       </View>
-      <TouchableOpacity 
+      <TouchableOpacity onPress={()=> viewPost(item.id, item.title, item.body)}
       style={{borderWidth:1, borderRadius:"5", padding:"4%"}}>
       <View>
         <Text>id: {item.id}</Text>
       </View>
       <View>
-        <Text> 글 제목: {item.title}</Text>
+        <Text> 글 제목: {shortTitle}</Text>
       </View>
       <View>
-        <Text>내용: {item.body}</Text>
+        <Text> 내용: {shortBody}</Text>
       </View>
       </TouchableOpacity>
     </View>
