@@ -19,6 +19,8 @@ import Compare from "./screens/compare";
 import News from "./screens/news";
 import Community from "./screens/community";
 
+import Writing from "./screens/writing";
+
 import SearchHeader from "./screens/searchheader";
 
 const Stack = createStackNavigator();
@@ -30,7 +32,11 @@ function StackScreen() {
         <Stack.Screen name="Main" component={Main} options={{headerShown: false}}/>
         <Stack.Screen name="Signin" component={Signin}  options={{headerShown: false}}/>
         <Stack.Screen name="Profile" component={Profile} options={{headerShown: false}}/>
-        <Stack.Screen name="특정 기업" component={Company}/>
+        <Stack.Screen name="특정 기업" component={Company}  options={{headerShown: false}}/>
+        <Stack.Screen name="Intro" component={Intro}  options={{headerShown: false}}/>
+
+        <Stack.Screen name="Writing" component={Writing}  options={{headerShown: false}}/>
+        
 
         </Stack.Navigator>
     );

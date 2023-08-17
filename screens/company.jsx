@@ -1,9 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { FlatList } from 'react-native-gesture-handler';
+
+import Intro from "./intro";
+import Community from './community';
+import Predict from './predict';
+import Compare from './compare';
+import News from './news';
 
 
 const Company = () => {
+  const navigation = useNavigation();
+
   const [introing, setIntro] = useState(true);
   const [predicting, setPredict] = useState(false);
   const [comparing, setCompare] = useState(false);
@@ -46,8 +58,18 @@ const Company = () => {
     setNews(false);
   }
 
+
+  const BackButton = () => {
+    navigation.navigate("Main");
+};
+
     return (
-      <View style={Styles.container}>
+      <SafeAreaView style={Styles.screen}>
+      <View style={Styles.container}>     
+      <StatusBar style="auto" />
+      <TouchableOpacity onPress={() => BackButton()}>
+      <Ionicons name="chevron-back" size={36} color="black" />
+      </TouchableOpacity>
         <Text style={Styles.HomeText}>특정 스타트업 기업 화면</Text>
         <View style={{flexDirection:"row", padding:"8%"}}>
         <Text style={{fontSize:18,}}>기업 이미지</Text>
@@ -77,31 +99,29 @@ const Company = () => {
 
 
         <View>
-          {introing ? <View><Text>기업 소개 선택했을 시 화면. {"\n"} 소개... </Text></View> : null}
-          {predicting ? <View><Text>예측 선택.{"\n"}성장 예측 그래프, {"\n"}피드백.</Text></View> : null}
-          {comparing ? <View><Text>비교 선택. {"\n"}동일 업종 내 비교 그래프.</Text></View> : null}
-          {newsing ? <View><Text>언론 선택. {"\n"}긍정/부정 뉴스 비율. {"\n"}긍정적 기사. {"\n"}부정적 기사.</Text></View> : null}
-          {communitying ? <View><Text>커뮤니티 선택. {"\n"}커뮤니티 게시판.</Text>
-          <TouchableOpacity style={Styles.write} >
-          <Text style={Styles.writetext}>글 작성</Text>
-          </TouchableOpacity>
-          
-          </View> : null}
-
+          {introing ? <Intro /> : null}
+          {predicting ? <Predict /> : null}
+          {comparing ? <Compare /> : null}
+          {newsing ? <News /> : null}
+          {communitying ? <Community />  : null}
         </View>
-      </View>
+      </View></SafeAreaView>
     )
   }
 
 export default Company;
 
 const Styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
   },
   HomeText: {
-    fontSize: 30,
+    fontSize: 27,
     textAlign: "center",
   },
   BottomText: {
@@ -120,18 +140,4 @@ const Styles = StyleSheet.create({
     fontSize: 17,
     textAlign: "center",
   },
-  write: {
-    backgroundColor: "lightgreen",
-    marginLeft: "70%",
-    width: "20%",
-    height: 33,
-    borderRadius: 10,
-    display: "flex",
-    justifyContent: "center",
-  },
-  writetext: {
-    fontSize: 16,
-    textAlign: "center",
-  },
-
 })

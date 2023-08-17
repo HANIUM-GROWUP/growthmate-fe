@@ -14,11 +14,10 @@ export default News;
 
 const Styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
   },
   HomeText: {
-    fontSize: 35,
+    fontSize: 25,
     textAlign: "center",
   },
 })

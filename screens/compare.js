@@ -14,7 +14,6 @@ export default Compare;
 
 const Styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
   },
   HomeText: {

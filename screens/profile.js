@@ -105,7 +105,7 @@ const Profile = ({navigation, route}) => {
         <View style={{flexDirection:"row", paddingLeft:"5%", marginTop:"8%"}}>
         <Text style={{fontSize:14, alignSelf:"center",marginRight:"5%"}}>닉네임</Text>
         <TextInput placeholder="이름을 입력하세요"  value={username} onChangeText={text => texting(text)}
-        style={{fontSize:16, width:"60%", height:40, marginRight:"3%", backgroundColor: '#e8e8e8', borderRadius:8}}></TextInput>
+        style={{fontSize:16, width:"60%", height:40, marginRight:"3%", backgroundColor: '#e8e8e8', borderRadius:8, padding:10}}></TextInput>
         <TouchableOpacity onPress={() => ChangeUsername()}
         style={{backgroundColor:"blue", borderRadius:10, justifyContent:"center", width:"18%"}}>
         <Text style={{fontSize:16, color:"white", textAlign:"center",}}>수정</Text>
