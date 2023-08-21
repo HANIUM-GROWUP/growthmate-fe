@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image,ActivityIndicator} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -70,16 +70,15 @@ const Company = () => {
       <TouchableOpacity onPress={() => BackButton()}>
       <Ionicons name="chevron-back" size={36} color="black" />
       </TouchableOpacity>
-        <Text style={Styles.HomeText}>특정 스타트업 기업 화면</Text>
-        <View style={{flexDirection:"row", padding:"8%"}}>
-        <Text style={{fontSize:18,}}>기업 이미지</Text>
-        <View style={{flexDirection:"column", paddingLeft:"30%"}}>
-        <Text style={{fontSize:18, paddingBottom:"3%"}}>기업명</Text>
-        <Text style={{fontSize:18, }}>업종</Text>
+        <View style={{flexDirection:"row", padding:"5%", marginLeft:"4%", paddingTop:"2%"}}>
+        <Image source={require("../image/bitmango.png")} style={{width:100, height:100}}/>
+        <View style={{flexDirection:"column", paddingLeft:"10%", paddingTop:"5%"}}>
+        <Text style={{fontSize:20, paddingBottom:"10%"}}>비트망고</Text>
+        <Text style={{fontSize:16, }}>정보통신업</Text>
         </View>
         </View>
 
-        <ScrollView pagingEnabled horizontal style={{maxHeight:"9%", borderBottomWidth:0.4}}>
+        <ScrollView horizontal style={{maxHeight:"9%", borderBottomWidth:0.4}}>
           <TouchableOpacity style={Styles.category} onPress={intro}>
           <Text style={Styles.cateText}>기업 소개</Text>
           </TouchableOpacity>
@@ -130,7 +129,6 @@ const Styles = StyleSheet.create({
     textAlign: "center",
   },
   category: {
-    backgroundColor: "yellow",
     padding: 6,
     width: "20%",
     display: "flex",

@@ -133,7 +133,7 @@ const Styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   HomeText: {
-    fontSize: 30,
+    fontSize: 28,
     textAlign: "center",
   },
   BottomText: {

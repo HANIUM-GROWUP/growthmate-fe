@@ -20,32 +20,23 @@ const viewPost = (id, title, body) => {
 }
 
 const renderItem = ({ item }) => {
-  if (item.title.length > 30) {
-    shortTitle = item.title.substring(0, 30) + "...";
-  }
-  else 
-  shortBody = item.title;
-  if (item.body.length > 70) {
-    shortBody = item.body.substring(0, 70) + "...";
-  }
-  else
-  shortBody = item.body;
-
   return (
     <View style={{justifyContent:"center", margin: "10%", marginTop:5, maxHeight:350}}>
-      <View>
-        <Text>user id: {item.userId}</Text>
-      </View>
       <TouchableOpacity onPress={()=> viewPost(item.id, item.title, item.body)}
       style={{borderWidth:1, borderRadius:"5", padding:"4%"}}>
-      <View>
+      <View style={{flexDirection:"row", marginBottom:"2%"}}>
+        <Text numberOfLines={2} style={{fontSize:16, width:"80%"}}> {item.title}</Text>
+        <View style={{flexDirection:"column", marginLeft:"4%"}}>
+        <Text>08/13</Text>
         <Text>id: {item.id}</Text>
-      </View>
+      </View></View>
+
       <View>
-        <Text> 글 제목: {shortTitle}</Text>
+        <Text numberOfLines={3}> {item.body}</Text>
       </View>
+      <View style={{borderWidth:0.3, margin:"3%"}}></View>
       <View>
-        <Text> 내용: {shortBody}</Text>
+        <Text>댓글 1개</Text>
       </View>
       </TouchableOpacity>
     </View>
@@ -88,7 +79,7 @@ const onEndReached = () => {
 
 
   return (
-    <View><Text>커뮤니티 화면</Text>
+    <View style={{maxHeight:485}}>
           <TouchableOpacity style={Styles.write} onPress={()=>writing()}>
           <Text style={Styles.writetext}>글 작성</Text>
           </TouchableOpacity>
@@ -121,6 +112,7 @@ const Styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     marginBottom: "5%",
+    marginTop: "5%",
   },
   writetext: {
     fontSize: 16,

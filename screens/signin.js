@@ -36,13 +36,13 @@ export {db};
 WebBrowser.maybeCompleteAuthSession();
 
 
-const Signin = (navigation) => {
+const Signin = ({navigation, route}) => {
   //const navigation = useNavigation();
 
   const url = "https://auth.expo.io/@dhdld/growup";
 const [request, response, promptAsync] = Google.useAuthRequest({
-	clientId: process.env.EXPO_PUBLIC_google_clientId,
-  androidClientId: process.env.EXPO_PUBLIC_google_androidClientId,
+	clientId: process.env.EXPO_PUBLIC_API_KEY,
+  androidClientId: process.env.EXPO_PUBLIC_API_GOOGLE_KEY,
     redirectUri: url,
     scopes: ['openid', 'profile', 'email'],
     responseType: 'id_token',
@@ -104,16 +104,17 @@ const BackButton = () => {
         <Ionicons name="chevron-back" size={36} color="black" />
         </TouchableOpacity>
        
-      <Text style={Styles.HomeText}>google 로그인 화면</Text>
+      <Text style={Styles.HomeText}>로그인</Text>
 
       <TouchableOpacity disabled={!request}
           onPress={() => {
             promptAsync();
           }}          
-          style={{alignSelf:"center", marginTop:"60%"}}>
-      <Image 
-        source={require("../image/login.png")}
+          style={{alignSelf:"center", marginTop:"45%", flexDirection:"row", borderWidth:0.6, borderRadius:7, width:"80%", height:"6%"}}>
+      <Image style={{width: 30, height: 30, alignSelf:"center", marginBottom: 10, marginLeft:"10%", marginTop:"3%"}}
+        source={require("../image/googleLogo.png")}
       />
+      <Text style={{fontSize:20, textAlignVertical:"center", textAlign:"center", marginLeft:"8%", marginTop:"3%"}}>Google로 시작하기</Text>
         </TouchableOpacity>
 
     </View>
