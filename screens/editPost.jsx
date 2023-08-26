@@ -16,7 +16,7 @@ import { Octicons } from '@expo/vector-icons';
 const EditPost = ({navigation, route}) => {
   
   const BackButton = () => {
-    navigation.navigate("특정 기업");
+    navigation.goBack();
 };
 
 const pastTitle = route.params.title;
@@ -26,12 +26,16 @@ const pastBody = route.params.body;
 const [title, setTitle] = useState('');
 const [content, setContent] = useState('');
 
+
+
 // 글 수정 버튼
 const DoneButton = () => {
+  /*
   if (title == '') {
     alert("제목을 입력해주세요.");
     return;
   }
+  */
   if (content == '') {
     alert("내용을 입력해주세요.");
     return;
@@ -47,7 +51,7 @@ const DoneButton = () => {
   .catch(function (error) {
     console.log(error);
   });
-  navigation.navigate("특정 기업");
+  navigation.navigate("특정 기업", {title: title, content: content});
   }
 };
 
@@ -62,9 +66,15 @@ const DoneButton = () => {
     <AntDesign name="close" size={29} color="black" />
     </TouchableOpacity>
     <Text style={Styles.HomeText}>글 수정 {"\n"}</Text>
+    {title == '' || content == '' ? 
+    <TouchableOpacity style={Styles.done} disabled>
+    <Text style={Styles.donetext}>완료</Text>
+    </TouchableOpacity>
+    :
     <TouchableOpacity onPress={() => DoneButton()} style={Styles.done}>
     <Text style={Styles.donetext}>완료</Text>
     </TouchableOpacity>
+    }
     </View>
 
       <TextInput defaultValue={pastTitle} onChangeText={text => setTitle(text)}

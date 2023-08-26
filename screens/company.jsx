@@ -13,8 +13,7 @@ import Compare from './compare';
 import News from './news';
 
 
-const Company = () => {
-  const navigation = useNavigation();
+const Company = ({navigation, route}) => {
 
   const [introing, setIntro] = useState(true);
   const [predicting, setPredict] = useState(false);
@@ -78,7 +77,7 @@ const Company = () => {
         </View>
         </View>
 
-        <ScrollView horizontal style={{maxHeight:"9%", borderBottomWidth:0.4}}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{maxHeight:"9%", borderBottomWidth:0.4}}>
           <TouchableOpacity style={Styles.category} onPress={intro}>
           <Text style={Styles.cateText}>기업 소개</Text>
           </TouchableOpacity>

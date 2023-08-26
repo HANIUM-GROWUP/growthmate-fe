@@ -47,7 +47,7 @@ console.log("post_id: ", post_id);
 console.log("title: ", title);
 
 const [isMyPost, setIsMyPost] = useState(true); // 내가 쓴 글인지 확인
-const [isMyComment, setIsMyComment] = useState(false); // 내가 쓴 댓글인지 확인
+const [isMyComment, setIsMyComment] = useState(true); // 내가 쓴 댓글인지 확인
 
 
 const editPost = () => {
@@ -71,7 +71,7 @@ const editComment = () => {
     {text: "Yes",
     onPress: async() => {
       axios.patch('http://localhost:3000/api/v1/comments/{comment_id}') 
-      
+
     },},
   ]);
 };
@@ -140,10 +140,34 @@ const uploadComment = () => {
         </View>
     </View>
 
+
+
     <Text style={{fontSize:16, marginTop:"5%", marginBottom:"5%"}}>{body}</Text>
 
     <View style={{borderWidth:0.3, margin:"3%"}}></View>
     <Text>comment</Text>
+
+    <View style={Styles.commentBox}>
+        <View style={{flexDirection:"column", }}>
+        <Text style={{paddingBottom:"3%"}}>작성자</Text>
+    <Text>투자 관련 문의 드립니다.............................</Text>
+    </View>
+    <View style={{flexDirection:"row", paddingTop:"2%"}}>
+        <Text>08/17  </Text> 
+        {isMyComment ? (
+        <View style={{flexDirection:"row", opacity:0.7,}}>
+        <TouchableOpacity onPress={editComment}>
+        <Text>수정 </Text>
+        </TouchableOpacity>
+        <Text>|</Text>
+        <TouchableOpacity onPress={deleteComment}>
+        <Text> 삭제</Text>
+        </TouchableOpacity>
+        </View>
+        ) : ( <View></View> )
+        }
+        </View>
+    </View>
 
     <View style={Styles.commentBox}>
         <View style={{flexDirection:"column", }}>
