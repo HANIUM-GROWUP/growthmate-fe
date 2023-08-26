@@ -16,7 +16,7 @@ const writing = () => {
 
 
 const viewPost = (id, title, body) => {
-  navigation.navigate("ViewPost", {id: id, title: title, body: body});
+  navigation.navigate("ViewPost", {post_id: id, title: title, body: body});
 }
 
 const renderItem = ({ item }) => {
@@ -83,7 +83,7 @@ const onEndReached = () => {
           <TouchableOpacity style={Styles.write} onPress={()=>writing()}>
           <Text style={Styles.writetext}>글 작성</Text>
           </TouchableOpacity>
-          <FlatList
+          <FlatList nestedScrollEnabled 
         data={data}
         renderItem={renderItem}
         keyExtractor={(item) => String(item.id)}

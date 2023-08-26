@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchHeader from "./searchheader";
 import { SearchContextProvider } from "./SearchContext";
 import { SearchBar } from 'react-native-elements';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 import { AntDesign } from '@expo/vector-icons';
@@ -32,7 +33,11 @@ const getLogin = async () => {
 	if(await AsyncStorage.getItem('user_id')!== null){
 		setIsLogin(true);
 	}
-}
+  else {
+    setIsLogin(false);
+  }
+};
+
 useEffect(() => {
 	getLogin();
 });

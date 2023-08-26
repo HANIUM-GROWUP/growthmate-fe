@@ -21,6 +21,7 @@ import Community from "./screens/community";
 
 import Writing from "./screens/writing";
 import ViewPost from "./screens/viewPost";
+import EditPost from "./screens/editPost";
 
 import SearchHeader from "./screens/searchheader";
 
@@ -38,6 +39,7 @@ function StackScreen() {
 
         <Stack.Screen name="Writing" component={Writing}  options={{headerShown: false}}/>
         <Stack.Screen name="ViewPost" component={ViewPost}  options={{headerShown: false}}/>
+        <Stack.Screen name="EditPost" component={EditPost}  options={{headerShown: false}}/>
 
         </Stack.Navigator>
     );

@@ -10,7 +10,21 @@ import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 
 const Profile = ({navigation, route}) => {
-    //const navigation = useNavigation();
+
+    axios.get('http://localhost:3000/api/v1/members/me',
+    {
+      headers: {
+        'Authorization': 'Bearer ' + route.params.token
+      }
+    })
+    .then(function (response) {
+      console.log(response);
+      const username = response.data.name;
+      const email = response.data.email;
+      const picture = response.data.picture;
+
+    }
+    )
 
     const BackButton = () => {
           navigation.navigate("Main",{ getuser: username, addi:"hmmmm" }) 
@@ -26,20 +40,32 @@ const Profile = ({navigation, route}) => {
         }
       }
 
-//      const [username, setUsername] = useState('');
       const [username, setUsername] = useState(route.params.info);
+
+      // 이름 수정
       const ChangeUsername = () => {
         if (username==" ") {
           alert("닉네임을 입력해주세요.");
           setUsername(false);
         }
         else{
-        setUsername(username); // 이걸 db에 저장
+        setUsername(username);
         console.log(username);
+        axios.patch('http://localhost:3000/api/v1/members/me', {
+          name: username,
+        })
+        .then(function (response) {
+          console.log(response);
+        }
+        )
+        .catch(function (error) {
+          console.log(error);
+        }
+        );
       }
       
       };
-      console.log("profile: ",username);
+      console.log("profile name: ",username);
 
       const [imageUrl, setImageUrl] = useState(''); // 이미지 주소
       const [status, requestPermission] = ImagePicker.useCameraPermissions();
@@ -74,8 +100,8 @@ const Profile = ({navigation, route}) => {
       formData.append('image', { uri: localUri, name: filename, type });
 /*
       await axios({
-        method: 'post',
-        url: {url}, //api 주소
+        method: 'patch',
+        url: 'http://localhost:3000/api/v1/posts/{post_id}, //api 주소
         data: formData,
         headers: { 'Content-Type': 'multipart/form-data' },
       });
@@ -88,7 +114,7 @@ const Profile = ({navigation, route}) => {
         <View style={Styles.container}>     
         <StatusBar style="auto" />
         <TouchableOpacity onPress={() => BackButton()}>
-        <Ionicons name="chevron-back" size={36} color="black" />
+        <Ionicons name="chevron-back" size={33} color="black" />
         </TouchableOpacity>
 
         <Text style={Styles.HomeText}>내 프로필</Text>

@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import API from '../api';
 
@@ -101,16 +102,17 @@ const BackButton = () => {
     <View style={Styles.container}>     
     <StatusBar style="auto" />
     <TouchableOpacity onPress={() => BackButton()}>
-        <Ionicons name="chevron-back" size={36} color="black" />
+        <Ionicons name="chevron-back" size={33} color="black" />
         </TouchableOpacity>
        
       <Text style={Styles.HomeText}>로그인</Text>
 
       <TouchableOpacity disabled={!request}
+          href={`${url}/oauth2/authorization/google`}
           onPress={() => {
             promptAsync();
           }}          
-          style={{alignSelf:"center", marginTop:"45%", flexDirection:"row", borderWidth:0.6, borderRadius:7, width:"80%", height:"6%"}}>
+          style={Styles.loginBox}>
       <Image style={{width: 30, height: 30, alignSelf:"center", marginBottom: 10, marginLeft:"10%", marginTop:"3%"}}
         source={require("../image/googleLogo.png")}
       />
@@ -137,17 +139,14 @@ const Styles = StyleSheet.create({
     fontSize: 30,
     textAlign: "center",
   },
-  NextBottom: {
-    backgroundColor: "purple",
-    padding: 10,
-    marginTop: "20%",
-    width: "50%",
-    alignSelf: "center",
-    borderRadius: 10,
+  loginBox: {
+    alignSelf:"center", 
+    marginTop:"45%", 
+    display:"flex",
+    flexDirection:"row", 
+    borderWidth:0.6, borderRadius:7, 
+    width:"80%", height:"6%"
   },
-  BottomText: {
-    fontSize: 15,
-    color: 'white',
-    textAlign: "center",
-  }
+
+
 })

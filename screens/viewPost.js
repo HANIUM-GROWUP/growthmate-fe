@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, BackHandler, Image, TextInput, 
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, BackHandler, Image, TextInput, Alert,
   Keyboard, TouchableWithoutFeedback } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useNavigation } from "@react-navigation/native";
@@ -18,30 +18,91 @@ const ViewPost = ({navigation, route}) => {
     navigation.navigate("특정 기업"); 
 };
 
-const id = route.params.id;
+//게시글 상세 조회 
+  axios.get('http://localhost:3000/api/v1/posts/{post_id}')
+  .then(function (response) {
+    console.log(response.data);
+    if (response.data.writer == user_id) {
+      setIsMyPost(true);
+    }
+  }
+  );
+
+// 댓글 조회
+  axios.get('http://localhost:3000/api/v1/posts/{post_id}/comments?cursor=10&size=10')
+  .then(function (response) {
+    console.log(response);
+    if (response.data.writer == user_id) {
+      setIsMyComment(true);
+    }
+  }
+  );
+
+
+const post_id = route.params.post_id;
 const title = route.params.title;
 const body = route.params.body;
 
-console.log("id: ", id);
+console.log("post_id: ", post_id);
 console.log("title: ", title);
 
+const [isMyPost, setIsMyPost] = useState(true); // 내가 쓴 글인지 확인
+const [isMyComment, setIsMyComment] = useState(false); // 내가 쓴 댓글인지 확인
+
+
 const editPost = () => {
-  alert("글을 수정합니다.");
+  navigation.navigate("EditPost", {post_id: post_id, title: title, body: body});
 };
 
 const deletePost = () => {
-  alert("글 삭제");
+  Alert.alert("글을 삭제합니다.", "", [
+    {text: "Cancel"},
+    {text: "Yes", style: "destructive",
+    onPress: async() => {
+  axios.delete('http://localhost:3000/api/v1/posts/{post_id}');
+  navigation.navigate("특정 기업");
+    },},
+  ]);
 };
 
 const editComment = () => {
-  alert("댓글 수정");
+  Alert.alert("댓글을 수정합니다.", "", [
+    {text: "Cancel"},
+    {text: "Yes",
+    onPress: async() => {
+      axios.patch('http://localhost:3000/api/v1/comments/{comment_id}') 
+      
+    },},
+  ]);
 };
 
 const deleteComment = () => {
-  alert("댓글 삭제");
+  Alert.alert("댓글을 삭제합니다.", "", [
+    {text: "Cancel"},
+    {text: "Yes", style: "destructive",
+    onPress: async() => {
+      axios.delete('http://localhost:3000/api/v1/comments/{comment_id}')
+    },},
+  ]);
 };
 
 const [comment, setComment] = useState('');
+
+// 댓글 등록
+const uploadComment = () => {
+  alert("댓글을 등록합니다.");
+  axios.post('http://localhost:3000/api/v1/posts/{post_id}/comments', {
+    content: comment,
+  })
+  .then(function (response) {
+    console.log(response);
+  }
+  )
+  .catch(function (error) {
+    console.log(error);
+  });
+};
+
 
   return (
     <SafeAreaView style={Styles.screen}>
@@ -52,7 +113,7 @@ const [comment, setComment] = useState('');
 
     <View style={{flexDirection:"row"}}>
     <TouchableOpacity onPress={() => BackButton()}>
-        <Ionicons name="chevron-back" size={36} color="black" />
+        <Ionicons name="chevron-back" size={33} color="black" />
         </TouchableOpacity>
     <Text style={Styles.HomeText}>company name{"\n"}</Text>
     </View>
@@ -64,6 +125,7 @@ const [comment, setComment] = useState('');
         <Text>08/17</Text> 
         <Text style={{fontSize:14,}}>작성자 이름</Text>
 
+        {isMyPost ? (
         <View style={{flexDirection:"row", opacity:0.7}}>
         <TouchableOpacity onPress={editPost}>
         <Text>수정 </Text>
@@ -73,6 +135,8 @@ const [comment, setComment] = useState('');
         <Text> 삭제</Text>
         </TouchableOpacity>
         </View>
+        ) : ( <View></View> )
+        }
         </View>
     </View>
 
@@ -88,6 +152,7 @@ const [comment, setComment] = useState('');
     </View>
     <View style={{flexDirection:"row", paddingTop:"2%"}}>
         <Text>08/17  </Text> 
+        {isMyComment ? (
         <View style={{flexDirection:"row", opacity:0.7,}}>
         <TouchableOpacity onPress={editComment}>
         <Text>수정 </Text>
@@ -97,6 +162,8 @@ const [comment, setComment] = useState('');
         <Text> 삭제</Text>
         </TouchableOpacity>
         </View>
+        ) : ( <View></View> )
+        }
         </View>
     </View>
 
@@ -109,6 +176,7 @@ const [comment, setComment] = useState('');
     </View>
     <View style={{flexDirection:"row", paddingTop:"2%"}}>
         <Text>08/17  </Text> 
+        {isMyComment ? (
         <View style={{flexDirection:"row", opacity:0.7,}}>
         <TouchableOpacity onPress={editComment}>
         <Text>수정 </Text>
@@ -118,6 +186,8 @@ const [comment, setComment] = useState('');
         <Text> 삭제</Text>
         </TouchableOpacity>
         </View>
+        ) : ( <View></View> )
+        }
         </View>
     </View>
 
@@ -168,7 +238,7 @@ const [comment, setComment] = useState('');
       <View style={{flexDirection:"row"}}>
       <TextInput placeholder="댓글 입력하기" onChangeText={text => setComment(text)}
         style={Styles.inputComment}></TextInput>
-        <TouchableOpacity style={Styles.commentBtn}>
+        <TouchableOpacity style={Styles.commentBtn} onPress={() => uploadComment()}>
         <Text style={{fontSize:16, textAlign:'center', textAlignVertical:"center", color:"white", marginTop:"25%"}}>등록</Text>
         </TouchableOpacity>
         </View>

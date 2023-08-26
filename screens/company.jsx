@@ -68,7 +68,7 @@ const Company = () => {
       <View style={Styles.container}>     
       <StatusBar style="auto" />
       <TouchableOpacity onPress={() => BackButton()}>
-      <Ionicons name="chevron-back" size={36} color="black" />
+      <Ionicons name="chevron-back" size={33} color="black" />
       </TouchableOpacity>
         <View style={{flexDirection:"row", padding:"5%", marginLeft:"4%", paddingTop:"2%"}}>
         <Image source={require("../image/bitmango.png")} style={{width:100, height:100}}/>
@@ -130,12 +130,12 @@ const Styles = StyleSheet.create({
   },
   category: {
     padding: 6,
-    width: "20%",
-    display: "flex",
+    width: 93,
     justifyContent: "center",
   },
   cateText: {
     fontSize: 17,
     textAlign: "center",
+    
   },
 })

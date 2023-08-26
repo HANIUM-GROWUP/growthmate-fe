@@ -13,14 +13,20 @@ import { Octicons } from '@expo/vector-icons';
 
 // 커뮤니티 글 작성 페이지
 
-const Writing = () => {
-  const navigation = useNavigation();
+const EditPost = ({navigation, route}) => {
   
   const BackButton = () => {
     navigation.navigate("특정 기업");
 };
 
-// 글 작성 완료 버튼
+const pastTitle = route.params.title;
+const pastBody = route.params.body;
+
+
+const [title, setTitle] = useState('');
+const [content, setContent] = useState('');
+
+// 글 수정 버튼
 const DoneButton = () => {
   if (title == '') {
     alert("제목을 입력해주세요.");
@@ -31,7 +37,7 @@ const DoneButton = () => {
     return;
   }
   else {
-  axios.post('http://localhost:3000/api/v1/companies/{company id}/posts', {
+  axios.patch('http://localhost:3000/api/v1/posts/{post_id}', {
     title: title,
     content: content,
   })
@@ -45,10 +51,6 @@ const DoneButton = () => {
   }
 };
 
-const [title, setTitle] = useState('');
-const [content, setContent] = useState('');
-
-
   return (
     <SafeAreaView style={Styles.screen}>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}> 
@@ -59,16 +61,16 @@ const [content, setContent] = useState('');
     <TouchableOpacity onPress={() => BackButton()}>
     <AntDesign name="close" size={29} color="black" />
     </TouchableOpacity>
-    <Text style={Styles.HomeText}>글 작성 {"\n"}</Text>
+    <Text style={Styles.HomeText}>글 수정 {"\n"}</Text>
     <TouchableOpacity onPress={() => DoneButton()} style={Styles.done}>
     <Text style={Styles.donetext}>완료</Text>
     </TouchableOpacity>
     </View>
 
-      <TextInput placeholder="제목을 입력하세요"  value={title} onChangeText={text => setTitle(text)}
+      <TextInput defaultValue={pastTitle} onChangeText={text => setTitle(text)}
         style={Styles.styleTitle}></TextInput>
         <View style={{borderWidth:0.3, margin:7}}></View>
-<TextInput placeholder="내용을 입력하세요" multiline={true} value={content} onChangeText={text => setContent(text)}
+<TextInput defaultValue={pastBody} multiline={true} onChangeText={text => setContent(text)}
         style={Styles.styleContent}></TextInput>
 
     </View>
@@ -77,7 +79,7 @@ const [content, setContent] = useState('');
   )
 }
 
-export default Writing;
+export default EditPost;
 
 const Styles = StyleSheet.create({
   screen: {
@@ -94,7 +96,7 @@ const Styles = StyleSheet.create({
   },
   done: {
     backgroundColor: "lightgreen",
-    marginLeft: "27%",
+    marginLeft: "auto",
     width: 50,
     height: 33,
     borderRadius: 10,
