@@ -5,6 +5,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StatusBar } from "expo-status-bar";
+import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from '@expo/vector-icons';
 
 import Splash from "./screens/splash";
 import Main from "./screens/main";
@@ -28,6 +30,7 @@ import SearchHeader from "./screens/searchheader";
 const Stack = createStackNavigator();
 
 function StackScreen() {
+    const navigation = useNavigation();
     return (
         <Stack.Navigator initialRouteName="Main">
         <Stack.Screen name="Splash" component={Splash} options={{headerShown: false}}/>
@@ -38,7 +41,18 @@ function StackScreen() {
         <Stack.Screen name="Intro" component={Intro}  options={{headerShown: false}}/>
 
         <Stack.Screen name="Writing" component={Writing}  options={{headerShown: false}}/>
-        <Stack.Screen name="ViewPost" component={ViewPost}  options={{headerShown: false}}/>
+        <Stack.Screen name="ViewPost" component={ViewPost} options={{title: "post", headerBackTitleVisible:false,
+    headerLeft: () => (
+        <TouchableOpacity
+            onPress={() => {
+                navigation.navigate("특정 기업");
+            }}
+            style={{ marginLeft: 10 }}
+        >
+            <Ionicons name="chevron-back" size={33} color="black" />
+        </TouchableOpacity>
+    )
+    }}/>
         <Stack.Screen name="EditPost" component={EditPost}  options={{headerShown: false}}/>
 
         </Stack.Navigator>

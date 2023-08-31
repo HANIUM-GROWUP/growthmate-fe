@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, BackHandler, Image, TextInput, 
   Keyboard, TouchableWithoutFeedback } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from "expo-status-bar";
@@ -11,7 +12,7 @@ import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
 import { Octicons } from '@expo/vector-icons';
 
-// 커뮤니티 글 작성 페이지
+// 커뮤니티 글 수정 페이지
 
 const EditPost = ({navigation, route}) => {
   
@@ -30,17 +31,7 @@ const [content, setContent] = useState('');
 
 // 글 수정 버튼
 const DoneButton = () => {
-  /*
-  if (title == '') {
-    alert("제목을 입력해주세요.");
-    return;
-  }
-  */
-  if (content == '') {
-    alert("내용을 입력해주세요.");
-    return;
-  }
-  else {
+
   axios.patch('http://localhost:3000/api/v1/posts/{post_id}', {
     title: title,
     content: content,
@@ -52,11 +43,11 @@ const DoneButton = () => {
     console.log(error);
   });
   navigation.navigate("특정 기업", {title: title, content: content});
-  }
-};
+  };
 
   return (
     <SafeAreaView style={Styles.screen}>
+      <KeyboardAwareScrollView>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}> 
     <View style={Styles.container}>     
     <StatusBar style="auto" />
@@ -85,6 +76,7 @@ const DoneButton = () => {
 
     </View>
     </TouchableWithoutFeedback>
+    </KeyboardAwareScrollView>
     </SafeAreaView>
   )
 }

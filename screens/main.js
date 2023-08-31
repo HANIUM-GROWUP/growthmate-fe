@@ -50,7 +50,7 @@ useEffect(() => {
     }}>
       <Text style={Styles.TitleText}>GrowthMate</Text>
       <TouchableOpacity style={{alignSelf:"center", marginLeft:"15%",}}
-        onPress={() => !isLogin
+        onPress={() => isLogin
            ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo})}
        >
       <AntDesign name="user" size={33} color="black" /></TouchableOpacity>

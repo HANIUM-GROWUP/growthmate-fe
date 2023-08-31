@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, BackHandler, Image, TextInput, Alert,
-  Keyboard, TouchableWithoutFeedback } from "react-native";
+  Keyboard, TouchableWithoutFeedback, ActivityIndicator, KeyboardAvoidingView, Dimensions } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useNavigation } from "@react-navigation/native";
 import { NavigationContainer } from '@react-navigation/native';
@@ -11,6 +11,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
 import { Octicons } from '@expo/vector-icons';
+import { FlatList } from 'react-native-gesture-handler';
+import constants from '../constants';
 
 const ViewPost = ({navigation, route}) => {
   //const navigation = useNavigation();
@@ -39,6 +41,68 @@ const ViewPost = ({navigation, route}) => {
   );
 
 
+  // 댓글 flatlist
+const renderCommentItem = ({ item }) => {
+  return (
+    <View>
+    <View >
+      <View>
+      <Text style={{fontSize:16, marginBottom:"2%"}}> 작성자 {item.email}</Text>
+      <Text style={{fontSize:16,}}> {item.body}</Text>
+    </View>
+    <View style={{flexDirection:"row", paddingTop:"2%"}}>
+        <Text>08/17  </Text> 
+        {isMyComment ? (
+        <View style={{flexDirection:"row", opacity:0.7,}}>
+        <TouchableOpacity onPress={editComment}>
+        <Text>수정 </Text>
+        </TouchableOpacity>
+        <Text>|</Text>
+        <TouchableOpacity onPress={deleteComment}>
+        <Text> 삭제</Text>
+        </TouchableOpacity>
+        </View>
+        ) : ( <View></View> )
+        }
+        </View>
+    </View>
+    <View style={{borderWidth:0.3, margin:"1%", opacity:0.4, marginVertical:"5%"}}></View>
+        </View>
+  )
+};
+
+const LIMIT = 11;
+const [commentData, setData] = useState([]);
+const [offset, setOffset] = useState(0);
+const [loading, setLoading] = useState(false);
+
+const getData = () => {
+  setLoading(true);
+  fetch("http://jsonplaceholder.typicode.com/comments")
+    .then((res) => res.json())
+    .then((res) => setData(commentData.concat(res.slice(offset, offset + LIMIT))))
+    .then(() => {
+      setOffset(offset + LIMIT);
+      setLoading(false);
+    })
+    .catch((error) => {
+      setLoading(false);
+      Alert.alert("에러가 났습니다");
+    });
+};
+
+useEffect(() => {
+  getData();
+}, []);
+const onEndReached = () => {
+  if (loading) {
+    return; // 로딩 중 계속 호출(fetch) 되는 것을 막는다.
+  } else {
+    getData();
+  }
+};
+
+// post
 const post_id = route.params.post_id;
 const title = route.params.title;
 const body = route.params.body;
@@ -81,7 +145,8 @@ const deleteComment = () => {
     {text: "Cancel"},
     {text: "Yes", style: "destructive",
     onPress: async() => {
-      axios.delete('http://localhost:3000/api/v1/comments/{comment_id}')
+      axios.delete('http://localhost:3000/api/v1/comments/{comment_id}');
+      this.refresh();
     },},
   ]);
 };
@@ -103,20 +168,16 @@ const uploadComment = () => {
   });
 };
 
-
   return (
-    <SafeAreaView style={Styles.screen}>
-      <KeyboardAwareScrollView>
+    <View style={Styles.screen}>
+      <KeyboardAvoidingView behavior="height" keyboardVerticalOffset={(constants.height)/10}
+      //keyboardVerticalOffset={152}
+      >
+      <View style={{maxHeight:650}}>
+      <ScrollView>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}> 
     <View style={Styles.container}>     
     <StatusBar style="auto" />
-
-    <View style={{flexDirection:"row"}}>
-    <TouchableOpacity onPress={() => BackButton()}>
-        <Ionicons name="chevron-back" size={33} color="black" />
-        </TouchableOpacity>
-    <Text style={Styles.HomeText}>company name{"\n"}</Text>
-    </View>
 
 <View style={{margin:5}}>
     <View style={{flexDirection:"row"}}>
@@ -145,29 +206,17 @@ const uploadComment = () => {
     <Text style={{fontSize:16, marginTop:"5%", marginBottom:"5%"}}>{body}</Text>
 
     <View style={{borderWidth:0.3, margin:"3%"}}></View>
-    <Text>comment</Text>
+    <Text style={{marginBottom:"4%"}}>comment</Text>
 
-    <View style={Styles.commentBox}>
-        <View style={{flexDirection:"column", }}>
-        <Text style={{paddingBottom:"3%"}}>작성자</Text>
-    <Text>투자 관련 문의 드립니다.............................</Text>
-    </View>
-    <View style={{flexDirection:"row", paddingTop:"2%"}}>
-        <Text>08/17  </Text> 
-        {isMyComment ? (
-        <View style={{flexDirection:"row", opacity:0.7,}}>
-        <TouchableOpacity onPress={editComment}>
-        <Text>수정 </Text>
-        </TouchableOpacity>
-        <Text>|</Text>
-        <TouchableOpacity onPress={deleteComment}>
-        <Text> 삭제</Text>
-        </TouchableOpacity>
-        </View>
-        ) : ( <View></View> )
-        }
-        </View>
-    </View>
+    <FlatList nestedScrollEnabled 
+        data={commentData}
+        renderItem={renderCommentItem}
+        keyExtractor={(item) => String(item.id)}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.8}
+        ListFooterComponent={loading && <ActivityIndicator />}
+      />
+
 
     <View style={Styles.commentBox}>
         <View style={{flexDirection:"column", }}>
@@ -217,49 +266,17 @@ const uploadComment = () => {
 
     <View style={{borderWidth:0.3, margin:"1%", opacity:0.4}}></View>
 
-    <View style={Styles.commentBox}>
-        <View style={{flexDirection:"column", }}>
-        <Text style={{paddingBottom:"3%"}}>작성자</Text>
-    <Text>투자 관련 문의 드립니다.............................</Text>
+
+
     </View>
-    <View style={{flexDirection:"row", paddingTop:"2%"}}>
-        <Text>08/17  </Text> 
-        <View style={{flexDirection:"row", opacity:0.7,}}>
-        <TouchableOpacity onPress={editComment}>
-        <Text>수정 </Text>
-        </TouchableOpacity>
-        <Text>|</Text>
-        <TouchableOpacity onPress={deleteComment}>
-        <Text> 삭제</Text>
-        </TouchableOpacity>
-        </View>
-        </View>
+    </View>
+    </TouchableWithoutFeedback>
+
+    </ScrollView>
     </View>
 
-    <View style={{borderWidth:0.4, margin:"1%", opacity:0.4}}></View>
 
-    <View style={Styles.commentBox}>
-        <View style={{flexDirection:"column", }}>
-        <Text style={{paddingBottom:"3%"}}>작성자</Text>
-    <Text>투자 관련 문의 드립니다.............................</Text>
-    </View>
-    <View style={{flexDirection:"row", paddingTop:"2%"}}>
-        <Text>08/17  </Text> 
-        <View style={{flexDirection:"row", opacity:0.7,}}>
-        <TouchableOpacity onPress={editComment}>
-        <Text>수정 </Text>
-        </TouchableOpacity>
-        <Text>|</Text>
-        <TouchableOpacity onPress={deleteComment}>
-        <Text> 삭제</Text>
-        </TouchableOpacity>
-        </View>
-        </View>
-    </View>
-
-    <View style={{borderWidth:0.3, margin:"1%", opacity:0.4}}></View>
-
-      <View style={{flexDirection:"row"}}>
+    <View style={{flexDirection:"row", backgroundColor:"white", }}>
       <TextInput placeholder="댓글 입력하기" onChangeText={text => setComment(text)}
         style={Styles.inputComment}></TextInput>
         <TouchableOpacity style={Styles.commentBtn} onPress={() => uploadComment()}>
@@ -267,11 +284,8 @@ const uploadComment = () => {
         </TouchableOpacity>
         </View>
 
+</KeyboardAvoidingView>
     </View>
-    </View>
-    </TouchableWithoutFeedback>
-    </KeyboardAwareScrollView>
-    </SafeAreaView>
   )
 }
 
@@ -279,43 +293,33 @@ export default ViewPost;
 
 const Styles = StyleSheet.create({
   screen: {
-    flex: 1,
+    //flex: 1,
     backgroundColor: '#fff',
   },
   container: {
     padding: "4%",
   },
-  HomeText: {
-    fontSize: 21,
-    textAlign: "center",
-    marginLeft:"20%",
-  },
   inputComment: {
-    fontSize:16, width:"85%", height:40, marginRight:"3%", 
-    marginTop:"8%",
+    fontSize:16, width:"83%", height:40, 
+    marginRight:"1%", 
+    marginVertical:"4%",
     padding:10,
     borderRadius:9, backgroundColor: '#e8e8e8',
+    marginLeft:"2%",
   },
   commentBtn: {
-    width:"14%", 
+    width:"12%", 
     height:40, 
     backgroundColor:"lightblue", borderRadius:9,
-    marginTop:"8%",
+    marginVertical:"4%",
     textAlignVertical:"center",
-  },
-  styleContent: {
-    fontSize:16, width:"100%", height:450, marginRight:"3%", 
-    padding:10, textAlignVertical:"top"
   },
   commentBox: {
   margin:"4%",
-
 },
-    commentDate: {
-        paddingBottom:"2%",
+  commentDate: {
+      paddingBottom:"2%",
 },
-
-
 
 
 })

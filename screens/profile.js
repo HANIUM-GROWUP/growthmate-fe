@@ -21,7 +21,7 @@ const Profile = ({navigation, route}) => {
       console.log(response);
       const username = response.data.name;
       const email = response.data.email;
-      const picture = response.data.picture;
+      const picture = response.data.picture; // 프로필 사진
 
     }
     )

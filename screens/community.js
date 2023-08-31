@@ -21,7 +21,7 @@ const viewPost = (id, title, body) => {
 
 const renderItem = ({ item }) => {
   return (
-    <View style={{justifyContent:"center", margin: "10%", marginTop:5, maxHeight:350}}>
+    <View style={{justifyContent:"center", margin: "10%", marginTop:2, maxHeight:350}}>
       <TouchableOpacity onPress={()=> viewPost(item.id, item.title, item.body)}
       style={{borderWidth:1, borderRadius:"5", padding:"4%"}}>
       <View style={{flexDirection:"row", marginBottom:"2%"}}>
@@ -111,8 +111,8 @@ const Styles = StyleSheet.create({
     borderRadius: 10,
     display: "flex",
     justifyContent: "center",
-    marginBottom: "5%",
-    marginTop: "5%",
+    marginBottom: "3%",
+    marginTop: "3%",
   },
   writetext: {
     fontSize: 16,
