@@ -21,17 +21,21 @@ const EditPost = ({navigation, route}) => {
 };
 
 const pastTitle = route.params.title;
-const pastBody = route.params.body;
+const pastContent = route.params.content;
 
 
-const [title, setTitle] = useState('');
-const [content, setContent] = useState('');
+const [title, setTitle] = useState(pastTitle);
+const [content, setContent] = useState(pastContent);
 
 
 
 // 글 수정 버튼
 const DoneButton = () => {
-
+  if (title == '' || content == '') {
+    alert("제목과 내용을 모두 입력해주세요.");
+    return;
+  }
+  else {
   axios.patch('http://localhost:3000/api/v1/posts/{post_id}', {
     title: title,
     content: content,
@@ -43,8 +47,8 @@ const DoneButton = () => {
     console.log(error);
   });
   navigation.navigate("특정 기업", {title: title, content: content});
-  };
-
+  }
+};
   return (
     <SafeAreaView style={Styles.screen}>
       <KeyboardAwareScrollView>
@@ -71,7 +75,7 @@ const DoneButton = () => {
       <TextInput defaultValue={pastTitle} onChangeText={text => setTitle(text)}
         style={Styles.styleTitle}></TextInput>
         <View style={{borderWidth:0.3, margin:7}}></View>
-<TextInput defaultValue={pastBody} multiline={true} onChangeText={text => setContent(text)}
+<TextInput defaultValue={pastContent} multiline={true} onChangeText={text => setContent(text)}
         style={Styles.styleContent}></TextInput>
 
     </View>
@@ -114,7 +118,7 @@ const Styles = StyleSheet.create({
     padding:10
   },
   styleContent: {
-    fontSize:16, width:"100%", height:450, marginRight:"3%", 
+    fontSize:16, marginRight:"3%", 
     padding:10, textAlignVertical:"top"
   },
 })

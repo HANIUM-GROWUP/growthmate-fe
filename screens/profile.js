@@ -21,36 +21,34 @@ const Profile = ({navigation, route}) => {
       console.log(response);
       const username = response.data.name;
       const email = response.data.email;
-      const picture = response.data.picture; // 프로필 사진
-
+      imageUrl = response.data.picture; // 프로필 사진
     }
     )
 
     const BackButton = () => {
-          navigation.navigate("Main",{ getuser: username, addi:"hmmmm" }) 
+          navigation.navigate("Main",{ getuser: username, addi:"hmmmm" }) // 화면 이동 변수 전달 test
       };
 
       const texting = (text) => {
-        if (text.length == 0) {
-          //setUsername(false);
-        }
-        else{
         setUsername(text);
         console.log(username);
-        }
       }
 
       const [username, setUsername] = useState(route.params.info);
 
       // 이름 수정
       const ChangeUsername = () => {
-        if (username==" ") {
+        if (username.length < 1) {
           alert("닉네임을 입력해주세요.");
+          //setUsername(false);
+        }
+        else if (username.length > 10) {
+          alert("닉네임은 10자 이내로 입력해주세요.");
           setUsername(false);
         }
         else{
         setUsername(username);
-        console.log(username);
+        console.log("save: ",username);
         axios.patch('http://localhost:3000/api/v1/members/me', {
           name: username,
         })
@@ -65,11 +63,12 @@ const Profile = ({navigation, route}) => {
       }
       
       };
-      console.log("profile name: ",username);
+      console.log("profile name: ", username);
 
       const [imageUrl, setImageUrl] = useState(''); // 이미지 주소
       const [status, requestPermission] = ImagePicker.useCameraPermissions();
 
+      // 이미지 업로드
       const uploadImage = async () => {
         if (!status?.granted) {
           const permission = await requestPermission(); // 카메라 권한 요청
@@ -90,7 +89,6 @@ const Profile = ({navigation, route}) => {
         console.log(result);
         setImageUrl(result.uri);
 
-
       // 서버에 요청 보내기
       const localUri = result.uri;
       const filename = localUri.split('/').pop();
@@ -98,14 +96,13 @@ const Profile = ({navigation, route}) => {
       const type = match ? `image/${match[1]}` : `image`;
       const formData = new FormData();
       formData.append('image', { uri: localUri, name: filename, type });
-/*
-      await axios({
-        method: 'patch',
-        url: 'http://localhost:3000/api/v1/posts/{post_id}, //api 주소
+
+      axios.patch('http://localhost:3000/api/v1/posts/{post_id}',
+      {
         data: formData,
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-*/
+
 };
 
 

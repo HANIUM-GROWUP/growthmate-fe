@@ -15,30 +15,43 @@ import { FlatList } from 'react-native-gesture-handler';
 import constants from '../constants';
 
 const ViewPost = ({navigation, route}) => {
-  //const navigation = useNavigation();
   const BackButton = () => {
     navigation.navigate("특정 기업"); 
 };
 
+let writer = "작성자 이름";
+let title = "제목";
+let postContent = "내용";
+let postCreatedDate = "작성 날짜";
 //게시글 상세 조회 
   axios.get('http://localhost:3000/api/v1/posts/{post_id}')
   .then(function (response) {
     console.log(response.data);
+    writer = response.data.writer;
+    title = response.data.title;
+    postContent = response.data.content;
+    postCreatedDate = response.data.createdDate;
     if (response.data.writer == user_id) {
       setIsMyPost(true);
-    }
-  }
+    }}
   );
 
+let commentId = "댓글 아이디";
+let commentWriter = "댓글 작성자";
+let commentContent = "댓글 내용";
+let commentCreatedDate = "댓글 작성 날짜";
 // 댓글 조회
   axios.get('http://localhost:3000/api/v1/posts/{post_id}/comments?cursor=10&size=10')
   .then(function (response) {
     console.log(response);
+    commentId = response.data.commentId;
+    commentWriter = response.data.writer;
+    commentContent = response.data.content;
+    commentCreatedDate = response.data.createdDate;
     if (response.data.writer == user_id) {
       setIsMyComment(true);
     }
-  }
-  );
+  });
 
 
   // 댓글 flatlist
@@ -68,8 +81,7 @@ const renderCommentItem = ({ item }) => {
     </View>
     <View style={{borderWidth:0.3, margin:"1%", opacity:0.4, marginVertical:"5%"}}></View>
         </View>
-  )
-};
+  )};
 
 const LIMIT = 11;
 const [commentData, setData] = useState([]);
@@ -102,10 +114,10 @@ const onEndReached = () => {
   }
 };
 
-// post
+// 글
 const post_id = route.params.post_id;
-const title = route.params.title;
-const body = route.params.body;
+title = route.params.title;
+content = route.params.content;
 
 console.log("post_id: ", post_id);
 console.log("title: ", title);
@@ -115,7 +127,7 @@ const [isMyComment, setIsMyComment] = useState(true); // 내가 쓴 댓글인지
 
 
 const editPost = () => {
-  navigation.navigate("EditPost", {post_id: post_id, title: title, body: body});
+  navigation.navigate("EditPost", {post_id: post_id, title: title, content: content});
 };
 
 const deletePost = () => {
@@ -203,7 +215,7 @@ const uploadComment = () => {
 
 
 
-    <Text style={{fontSize:16, marginTop:"5%", marginBottom:"5%"}}>{body}</Text>
+    <Text style={{fontSize:16, marginTop:"5%", marginBottom:"5%"}}>{content}</Text>
 
     <View style={{borderWidth:0.3, margin:"3%"}}></View>
     <Text style={{marginBottom:"4%"}}>comment</Text>

@@ -15,8 +15,8 @@ const writing = () => {
 };
 
 
-const viewPost = (id, title, body) => {
-  navigation.navigate("ViewPost", {post_id: id, title: title, body: body});
+const viewPost = (id, title, content) => {
+  navigation.navigate("ViewPost", {post_id: id, title: title, content: content});
 }
 
 const renderItem = ({ item }) => {

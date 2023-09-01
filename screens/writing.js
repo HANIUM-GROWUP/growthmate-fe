@@ -113,7 +113,8 @@ const Styles = StyleSheet.create({
     padding:10
   },
   styleContent: {
-    fontSize:16, width:"100%", height:450, marginRight:"3%", 
-    padding:10, textAlignVertical:"top"
+    fontSize:16, marginRight:"3%", 
+    padding:10, textAlignVertical:"top",
+    //height: 320,
   },
 })
