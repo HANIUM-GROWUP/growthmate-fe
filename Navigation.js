@@ -21,7 +21,7 @@ import Compare from "./screens/compare";
 import News from "./screens/news";
 import Community from "./screens/community";
 
-import Writing from "./screens/writing";
+import WritePost from "./screens/WritePost";
 import ViewPost from "./screens/viewPost";
 import EditPost from "./screens/editPost";
 
@@ -40,7 +40,7 @@ function StackScreen() {
         <Stack.Screen name="특정 기업" component={Company}  options={{headerShown: false}}/>
         <Stack.Screen name="Intro" component={Intro}  options={{headerShown: false}}/>
 
-        <Stack.Screen name="Writing" component={Writing}  options={{headerShown: false}}/>
+        <Stack.Screen name="WritePost" component={WritePost}  options={{headerShown: false}}/>
         <Stack.Screen name="ViewPost" component={ViewPost} options={{title: "post", headerBackTitleVisible:false,
     headerLeft: () => (
         <TouchableOpacity

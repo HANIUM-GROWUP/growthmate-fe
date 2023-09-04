@@ -11,7 +11,7 @@ const Community = () => {
   const navigation = useNavigation();
     
 const writing = () => {
-  navigation.navigate("Writing");
+  navigation.navigate("WritePost");
 };
 
 

@@ -14,7 +14,7 @@ import { Octicons } from '@expo/vector-icons';
 
 // 커뮤니티 글 작성 페이지
 
-const Writing = () => {
+const WritePost = () => {
   const navigation = useNavigation();
   
   const BackButton = () => {
@@ -80,7 +80,7 @@ const [content, setContent] = useState('');
   )
 }
 
-export default Writing;
+export default WritePost;
 
 const Styles = StyleSheet.create({
   screen: {
