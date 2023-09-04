@@ -1,4 +1,2 @@
 [build]
 build = "build"
-  publish = "build"
-  command = "npx expo build"
