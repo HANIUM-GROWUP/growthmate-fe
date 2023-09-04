@@ -7,6 +7,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 import Splash from "./screens/splash";
 import Main from "./screens/main";
@@ -44,9 +45,7 @@ function StackScreen() {
         <Stack.Screen name="ViewPost" component={ViewPost} options={{title: "post", headerBackTitleVisible:false,
     headerLeft: () => (
         <TouchableOpacity
-            onPress={() => {
-                navigation.navigate("특정 기업");
-            }}
+            onPress={() => {navigation.navigate("특정 기업");}}
             style={{ marginLeft: 10 }}
         >
             <Ionicons name="chevron-back" size={33} color="black" />

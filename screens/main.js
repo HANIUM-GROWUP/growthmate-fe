@@ -19,7 +19,7 @@ const Main = ({navigation, route}) => {
   const {params} = route;
   const userInfo = params ? params.getuser : null;
   console.log("info: ", userInfo);
-  const user=null; // 구글로그인 화면 이동 오류로 일단 임시 대처
+  const user=null; // 구글로그인 화면 이동 오류로 일단 임시
 
   const saveId = async id => {
     try {
@@ -46,7 +46,7 @@ useEffect(() => {
     <SafeAreaView style={Styles.screen}>
     <View style={Styles.container}>
       <StatusBar style="auto" />
-      <View style={{ flexDirection: "row", backgroundColor:"lightgreen", width:"100%", height:"8%",
+      <View style={{ flexDirection: "row", width:"100%", height:"8%", justifyContent:"center",
     }}>
       <Text style={Styles.TitleText}>GrowthMate</Text>
       <TouchableOpacity style={{alignSelf:"center", marginLeft:"15%",}}
@@ -132,14 +132,6 @@ const Styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center",
     },
-  NextBottom: {
-    backgroundColor: "purple",
-    padding: 12,
-    marginTop: "10%",
-    width: "25%",
-    marginLeft: "67%",
-    borderRadius: 10,
-  },
   BottomText: {
     fontSize: 15,
     color: 'white',
@@ -155,7 +147,7 @@ const Styles = StyleSheet.create({
         padding: 10,
         marginTop: "2%",
         marginLeft: "7%",
-        width: "17%",
+        width: "13%",
         borderRadius: 10,
         },
     comp: {

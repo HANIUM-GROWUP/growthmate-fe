@@ -19,21 +19,6 @@ import { getAuth, GoogleAuthProvider, signInWithCredential, onAuthStateChanged }
 
 import * as AuthSession from 'expo-auth-session';
 
-const firebaseConfig = {
-  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
-  authDomain: "growup-394504.firebaseapp.com",
-  projectId: "growup-394504",
-  storageBucket: "growup-394504.appspot.com",
-  messagingSenderId: "530534892230",
-  appId: "1:530534892230:web:f26a2e9ca278b853e2cdc7",
-  measurementId: "G-Z8XEH4N56P"
-};
-
-// Initialize Firebase
-const fbase = initializeApp(firebaseConfig);
-const db = getAnalytics(fbase);
-export {db};
-
 WebBrowser.maybeCompleteAuthSession();
 
 

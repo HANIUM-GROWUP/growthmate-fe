@@ -31,7 +31,7 @@ let postCreatedDate = "작성 날짜";
     title = response.data.title;
     postContent = response.data.content;
     postCreatedDate = response.data.createdDate;
-    if (response.data.writer == user_id) {
+    if (response.data.writer == user_id) { // 내가 쓴 글인지 확인
       setIsMyPost(true);
     }}
   );
@@ -48,7 +48,7 @@ let commentCreatedDate = "댓글 작성 날짜";
     commentWriter = response.data.writer;
     commentContent = response.data.content;
     commentCreatedDate = response.data.createdDate;
-    if (response.data.writer == user_id) {
+    if (response.data.writer == user_id) { // 내가 쓴 댓글인지 확인
       setIsMyComment(true);
     }
   });

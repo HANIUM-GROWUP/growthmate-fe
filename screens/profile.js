@@ -47,6 +47,7 @@ const Profile = ({navigation, route}) => {
           setUsername(false);
         }
         else{
+          alert("닉네임이 변경되었습니다.");
         setUsername(username);
         console.log("save: ",username);
         axios.patch('http://localhost:3000/api/v1/members/me', {
