@@ -21,7 +21,7 @@ import Compare from "./screens/compare";
 import News from "./screens/news";
 import Community from "./screens/community";
 
-import WritePost from "./screens/WritePost";
+import WritePost from "./screens/writePost";
 import ViewPost from "./screens/viewPost";
 import EditPost from "./screens/editPost";
 
