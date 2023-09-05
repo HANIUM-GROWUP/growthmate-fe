@@ -3,6 +3,11 @@ import { StyleSheet, Text, View,TextInput } from 'react-native';
 import Navigation from './Navigation';
 import React from 'react';
 
+import Amplify, { withAuthenticator } from 'aws-amplify-react-native';
+import aws_exports from './aws-exports';
+
+Amplify.configure(aws_exports);
+
 export default function App() {
   // 기기 폰트 크기에 따라 앱 폰트 크기가 변경되는 것을 방지
   Text.defaultProps = Text.defaultProps || {};
