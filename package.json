@@ -4,7 +4,8 @@
   "scripts": {
     "start": "expo start --dev-client",
     "build": "expo build",
-    "android": "expo run:android",
+    "preandroid": "npx jetify",
+    "android": "react-native run-android",
     "ios": "expo run:ios",
     "web": "expo start --web"
   },
