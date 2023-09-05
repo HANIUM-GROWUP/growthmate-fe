@@ -2,12 +2,12 @@
   "name": "growup",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start --dev-client",
-    "build": "expo build",
     "preandroid": "npx jetify",
     "android": "react-native run-android",
-    "ios": "expo run:ios",
-    "web": "expo start --web"
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@expo/webpack-config": "^18.1.2",
