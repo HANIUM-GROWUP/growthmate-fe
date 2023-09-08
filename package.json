@@ -2,13 +2,15 @@
   "name": "growup",
   "version": "1.0.0",
   "scripts": {
-    "preandroid": "npx jetify",
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
-    "start": "expo start --dev-client",
-    "test": "jest",
-    "lint": "eslint ."
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "predeploy": "npm run build",    
+    "deploy": "gh-pages -d build"  
   },
+  "homepage": "https://dhdld.github.io/growup/",
+
   "dependencies": {
     "@expo/webpack-config": "^18.1.2",
     "@react-native-async-storage/async-storage": "1.17.11",
@@ -34,12 +36,14 @@
     "expo-status-bar": "~1.4.4",
     "expo-web-browser": "~12.1.1",
     "firebase": "^10.1.0",
+    "gh-pages": "^6.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.71.8",
     "react-native-dotenv": "^3.4.9",
     "react-native-elements": "^3.4.3",
     "react-native-gesture-handler": "~2.9.0",
+    "react-native-gradle-plugin": "^0.71.19",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-pager-view": "^6.1.2",
     "react-native-reanimated": "~2.14.4",
