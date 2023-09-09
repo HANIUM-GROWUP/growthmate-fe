@@ -99,7 +99,7 @@ const BackButton = () => {
           }}          
           style={Styles.loginBox}>
       <Image style={{width: 30, height: 30, alignSelf:"center", marginBottom: 10, marginLeft:"10%", marginTop:"3%"}}
-        source={require("../image/googleLogo.png")}
+        source={require("../public/src/googleLogo.png")}
       />
       <Text style={{fontSize:20, textAlignVertical:"center", textAlign:"center", marginLeft:"8%", marginTop:"3%"}}>Google로 시작하기</Text>
         </TouchableOpacity>

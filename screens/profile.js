@@ -120,7 +120,7 @@ const Profile = ({navigation, route}) => {
 
         <Image 
         style={{width:110, height:110, borderRadius:100, alignSelf:"center"}}
-        source={imageUrl ? { uri: imageUrl } : require("../image/profile.png")}
+        source={imageUrl ? { uri: imageUrl } : require("../public/src/profile.png")}
         />
         <TouchableOpacity style={{paddingTop:"2%", alignSelf:"center"}} onPress={uploadImage}>
           <Text>이미지 변경</Text>
