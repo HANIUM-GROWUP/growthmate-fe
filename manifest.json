@@ -1,0 +1,21 @@
+{
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "lang": "en",
+  "name": "growup",
+  "short_name": "growup",
+  "start_url": "/?utm_source=web_app_manifest",
+  "orientation": "portrait",
+  "related_applications": [
+    {
+      "platform": "itunes",
+      "id": "com.growup.growUp"
+    },
+    {
+      "platform": "play",
+      "url": "http://play.google.com/store/apps/details?id=com.growup.growUp",
+      "id": "com.growup.growUp"
+    }
+  ],
+  "prefer_related_applications": true
+}
