@@ -90,7 +90,7 @@ const [loading, setLoading] = useState(false);
 
 const getData = () => {
   setLoading(true);
-  fetch("http://jsonplaceholder.typicode.com/comments")
+  fetch("https://jsonplaceholder.typicode.com/comments")
     .then((res) => res.json())
     .then((res) => setData(commentData.concat(res.slice(offset, offset + LIMIT))))
     .then(() => {
