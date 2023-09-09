@@ -52,7 +52,7 @@ const [loading, setLoading] = useState(false);
 
 const getData = () => {
   setLoading(true);
-  fetch("https://jsonplaceholder.typicode.com/posts")
+  fetch("//jsonplaceholder.typicode.com/posts")
     .then((res) => res.json())
     .then((res) => setData(data.concat(res.slice(offset, offset + LIMIT))))
     .then(() => {
