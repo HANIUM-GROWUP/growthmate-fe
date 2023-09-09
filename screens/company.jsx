@@ -70,7 +70,7 @@ const Company = ({navigation, route}) => {
       <Ionicons name="chevron-back" size={33} color="black" />
       </TouchableOpacity>
         <View style={{flexDirection:"row", padding:"5%", marginLeft:"4%", paddingTop:"2%"}}>
-        <Image source={require("https://dhdld.github.io/HANIUM-GROWUP/growthmate-fe/blob/gh-pages/src/bitmango.png")} style={{width:100, height:100}}/>
+        <Image source={require("../public/src/bitmango.png")} style={{width:100, height:100}}/>
         <View style={{flexDirection:"column", paddingLeft:"10%", paddingTop:"5%"}}>
         <Text style={{fontSize:20, paddingBottom:"10%"}}>비트망고</Text>
         <Text style={{fontSize:16, }}>...정보통신업</Text>
