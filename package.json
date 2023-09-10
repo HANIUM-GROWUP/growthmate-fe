@@ -6,9 +6,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "build": "npx expo export -p web"
+    "predeploy": "npx expo export -p web",
+    "deploy": "gh-pages -d build"
   },
   "homepage": "https://hanium-growup.github.io/growthmate-fe/",
   "dependencies": {
