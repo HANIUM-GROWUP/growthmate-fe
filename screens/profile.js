@@ -9,9 +9,11 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 
+import API from '../api';
+
 const Profile = ({navigation, route}) => {
 
-    axios.get('http://localhost:3000/api/v1/members/me',
+    axios.get(`${API}/api/v1/members/me`,
     {
       headers: {
         'Authorization': 'Bearer ' + route.params.token
@@ -50,7 +52,7 @@ const Profile = ({navigation, route}) => {
           alert("닉네임이 변경되었습니다.");
         setUsername(username);
         console.log("save: ",username);
-        axios.patch('http://localhost:3000/api/v1/members/me', {
+        axios.patch(`${API}/api/v1/members/me`, {
           name: username,
         })
         .then(function (response) {
@@ -98,7 +100,7 @@ const Profile = ({navigation, route}) => {
       const formData = new FormData();
       formData.append('image', { uri: localUri, name: filename, type });
 
-      axios.patch('http://localhost:3000/api/v1/posts/{post_id}',
+      axios.patch(`${API}/api/v1/posts/{post_id}`,
       {
         data: formData,
         headers: { 'Content-Type': 'multipart/form-data' },

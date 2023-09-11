@@ -74,7 +74,6 @@ useEffect(() => {
         <Text style={Styles.sortText}>정렬</Text>
       </TouchableOpacity>
 
-        <Text>최신순/자산순</Text>
       
         <Text>User: {JSON.stringify(userInfo)}</Text>
 

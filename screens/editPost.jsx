@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
 import { Octicons } from '@expo/vector-icons';
+import API from '../api';
 
 // 커뮤니티 글 수정 페이지
 
@@ -36,7 +37,7 @@ const DoneButton = () => {
     return;
   }
   else {
-  axios.patch('http://localhost:3000/api/v1/posts/{post_id}', {
+  axios.patch(`${API}/api/v1/posts/{post_id}`, {
     title: title,
     content: content,
   })

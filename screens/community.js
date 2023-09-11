@@ -52,7 +52,8 @@ const [loading, setLoading] = useState(false);
 
 const getData = () => {
   setLoading(true);
-  fetch("//jsonplaceholder.typicode.com/posts")
+  fetch("//jsonplaceholder.typicode.com/posts") // web 배포에서 실행할 때
+  //fetch("https://jsonplaceholder.typicode.com/posts") 앱에서 실행할 때
     .then((res) => res.json())
     .then((res) => setData(data.concat(res.slice(offset, offset + LIMIT))))
     .then(() => {

@@ -73,7 +73,7 @@ const Company = ({navigation, route}) => {
         <Image source={require("../public/src/bitmango.png")} style={{width:100, height:100}}/>
         <View style={{flexDirection:"column", paddingLeft:"10%", paddingTop:"5%"}}>
         <Text style={{fontSize:20, paddingBottom:"10%"}}>비트망고</Text>
-        <Text style={{fontSize:16, }}>...정보통신업</Text>
+        <Text style={{fontSize:16, }}>정보통신업</Text>
         </View>
         </View>
 

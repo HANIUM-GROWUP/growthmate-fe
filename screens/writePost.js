@@ -10,6 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
+import { API } from '../api';
 import { Octicons } from '@expo/vector-icons';
 
 // 커뮤니티 글 작성 페이지
@@ -32,7 +33,7 @@ const DoneButton = () => {
     return;
   }
   else {
-  axios.post('http://localhost:3000/api/v1/companies/{company id}/posts', {
+  axios.post(`${API}/v1/companies/{company_id}/posts`, {
     title: title,
     content: content,
   })

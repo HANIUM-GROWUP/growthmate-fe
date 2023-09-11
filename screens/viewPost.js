@@ -14,6 +14,8 @@ import { Octicons } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
 import constants from '../constants';
 
+import API from '../api';
+
 const ViewPost = ({navigation, route}) => {
   const BackButton = () => {
     navigation.navigate("특정 기업"); 
@@ -24,16 +26,17 @@ let title = "제목";
 let postContent = "내용";
 let postCreatedDate = "작성 날짜";
 //게시글 상세 조회 
-  axios.get('http://localhost:3000/api/v1/posts/{post_id}')
+  axios.get(`${API}/api/api/v1/posts/${post_id}`)
   .then(function (response) {
     console.log(response.data);
     writer = response.data.writer;
     title = response.data.title;
     postContent = response.data.content;
     postCreatedDate = response.data.createdDate;
-    if (response.data.writer == user_id) { // 내가 쓴 글인지 확인
+    if (response.data.isMine == true) { 
       setIsMyPost(true);
-    }}
+    }
+  }
   );
 
 let commentId = "댓글 아이디";
@@ -41,16 +44,16 @@ let commentWriter = "댓글 작성자";
 let commentContent = "댓글 내용";
 let commentCreatedDate = "댓글 작성 날짜";
 // 댓글 조회
-  axios.get('http://localhost:3000/api/v1/posts/{post_id}/comments?cursor=10&size=10')
+  axios.get(`${API}/api/v1/posts/${post_id}/comments?cursor=10&size=10`)
   .then(function (response) {
     console.log(response);
     commentId = response.data.commentId;
     commentWriter = response.data.writer;
     commentContent = response.data.content;
     commentCreatedDate = response.data.createdDate;
-    if (response.data.writer == user_id) { // 내가 쓴 댓글인지 확인
+    if (response.data.isMine == true) { 
       setIsMyComment(true);
-    }
+  }
   });
 
 
@@ -124,7 +127,7 @@ console.log("title: ", title);
 
 const [isMyPost, setIsMyPost] = useState(true); // 내가 쓴 글인지 확인
 const [isMyComment, setIsMyComment] = useState(true); // 내가 쓴 댓글인지 확인
-
+// test 중이라서 true로 설정해놓음. 나중에 false로 바꿔야 함.
 
 const editPost = () => {
   navigation.navigate("EditPost", {post_id: post_id, title: title, content: content});
@@ -135,7 +138,7 @@ const deletePost = () => {
     {text: "Cancel"},
     {text: "Yes", style: "destructive",
     onPress: async() => {
-  axios.delete('http://localhost:3000/api/v1/posts/{post_id}');
+  axios.delete(`${API}/api/v1/posts/{post_id}`);
   navigation.navigate("특정 기업");
     },},
   ]);
@@ -146,7 +149,7 @@ const editComment = () => {
     {text: "Cancel"},
     {text: "Yes",
     onPress: async() => {
-      axios.patch('http://localhost:3000/api/v1/comments/{comment_id}') 
+      axios.patch(`${API}/api/v1/comments/{comment_id}`) 
 
     },},
   ]);
@@ -157,7 +160,7 @@ const deleteComment = () => {
     {text: "Cancel"},
     {text: "Yes", style: "destructive",
     onPress: async() => {
-      axios.delete('http://localhost:3000/api/v1/comments/{comment_id}');
+      axios.delete(`${API}/api/v1/comments/{comment_id}`);
       this.refresh();
     },},
   ]);
@@ -168,7 +171,7 @@ const [comment, setComment] = useState('');
 // 댓글 등록
 const uploadComment = () => {
   alert("댓글을 등록합니다.");
-  axios.post('http://localhost:3000/api/v1/posts/{post_id}/comments', {
+  axios.post(`${API}/api/v1/posts/{post_id}/comments`, {
     content: comment,
   })
   .then(function (response) {

@@ -23,12 +23,14 @@ WebBrowser.maybeCompleteAuthSession();
 
 
 const Signin = ({navigation, route}) => {
-  //const navigation = useNavigation();
 
   const url = "https://auth.expo.io/@dhdld/growup";
 const [request, response, promptAsync] = Google.useAuthRequest({
 	clientId: process.env.EXPO_PUBLIC_API_KEY,
+  expoClientId: process.env.EXPO_PUBLIC_API_KEY,
+  iosClientId: process.env.EXPO_PUBLIC_API_KEY,
   androidClientId: process.env.EXPO_PUBLIC_API_GOOGLE_KEY,
+  webClientId: process.env.EXPO_PUBLIC_API_WEB_KEY,
     redirectUri: url,
     scopes: ['openid', 'profile', 'email'],
     responseType: 'id_token',
@@ -53,7 +55,7 @@ const [request, response, promptAsync] = Google.useAuthRequest({
 
       const LoginOk = async () => {
         try {
-          const res = await API.post('/auth/login', {
+          const res = await API.post(`${API}/auth/login`, {
             accessToken: id_token,
           });
           console.log(res);
@@ -61,6 +63,7 @@ const [request, response, promptAsync] = Google.useAuthRequest({
           console.error("login error :", error);
         }
       };
+      LoginOk();
 
     }
   }, [response]); // response가 바뀔 때마다 실행
