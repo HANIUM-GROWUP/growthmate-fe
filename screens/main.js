@@ -10,11 +10,17 @@ import { SearchContextProvider } from "./SearchContext";
 import { SearchBar } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import API from '../api';
 
 import { AntDesign } from '@expo/vector-icons';
 
 const Main = ({navigation, route}) => {
   //const navigation = useNavigation();
+
+  axios.get(`${API}/api/v1/companies?cursor=10&size=10&sort=establisDate`)
+  .then(function (response) {
+    console.log(response);
+  })
 
   const {params} = route;
   const userInfo = params ? params.getuser : null;

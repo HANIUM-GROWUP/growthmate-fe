@@ -64,12 +64,13 @@ const Company = ({navigation, route}) => {
 
     return (
       <SafeAreaView style={Styles.screen}>
-      <View style={Styles.container}>     
+      <View style={Styles.container}>    
+      <View style={{flex:1}}> 
       <StatusBar style="auto" />
       <TouchableOpacity onPress={() => BackButton()}>
       <Ionicons name="chevron-back" size={33} color="black" />
       </TouchableOpacity>
-        <View style={{flexDirection:"row", padding:"5%", marginLeft:"4%", paddingTop:"2%"}}>
+        <View style={{flexDirection:"row", paddingBottom:"2%", padding:"5%", marginLeft:"4%", paddingTop:"2%"}}>
         <Image source={require("../public/src/bitmango.png")} style={{width:100, height:100}}/>
         <View style={{flexDirection:"column", paddingLeft:"10%", paddingTop:"5%"}}>
         <Text style={{fontSize:20, paddingBottom:"10%"}}>비트망고</Text>
@@ -77,7 +78,7 @@ const Company = ({navigation, route}) => {
         </View>
         </View>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{maxHeight:"9%", borderBottomWidth:0.4}}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{maxHeight:"26%", borderBottomWidth:0.4}}>
           <TouchableOpacity style={Styles.category} onPress={intro}>
           <Text style={Styles.cateText}>기업 소개</Text>
           </TouchableOpacity>
@@ -95,8 +96,8 @@ const Company = ({navigation, route}) => {
           </TouchableOpacity>
         </ScrollView>
 
-
-        <View>
+        </View>
+        <View style={{flex: 2.4}}>
           {introing ? <Intro /> : null}
           {predicting ? <Predict /> : null}
           {comparing ? <Compare /> : null}

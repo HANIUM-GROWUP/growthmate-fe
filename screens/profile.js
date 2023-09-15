@@ -100,7 +100,7 @@ const Profile = ({navigation, route}) => {
       const formData = new FormData();
       formData.append('image', { uri: localUri, name: filename, type });
 
-      axios.patch(`${API}/api/v1/posts/{post_id}`,
+      axios.patch(`${API}/api/v1/members/me`,
       {
         data: formData,
         headers: { 'Content-Type': 'multipart/form-data' },
