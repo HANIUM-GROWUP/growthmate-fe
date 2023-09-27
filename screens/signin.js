@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image, Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -11,6 +11,7 @@ import { getAnalytics } from "firebase/analytics";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import API from '../api';
+import { EXPO_PUBLIC_FIREBASE_API_KEY, EXPO_PUBLIC_API_KEY, EXPO_PUBLIC_API_ANDROID_KEY } from "@env";
 
 import * as WebBrowser from 'expo-web-browser';
 import { ResponseType } from 'expo-auth-session';
@@ -21,42 +22,83 @@ import * as AuthSession from 'expo-auth-session';
 
 WebBrowser.maybeCompleteAuthSession();
 
-
 const Signin = ({navigation, route}) => {
-
-  const url = "https://auth.expo.io/@dhdld/growup";
+const url = "https://auth.expo.io/@dhdld/growup"; // redirect url
 const [request, response, promptAsync] = Google.useAuthRequest({
-	clientId: process.env.EXPO_PUBLIC_API_KEY,
-  expoClientId: process.env.EXPO_PUBLIC_API_KEY,
-  iosClientId: process.env.EXPO_PUBLIC_API_KEY,
-  androidClientId: process.env.EXPO_PUBLIC_API_GOOGLE_KEY,
-  webClientId: process.env.EXPO_PUBLIC_API_WEB_KEY,
-    redirectUri: url,
-    scopes: ['openid', 'profile', 'email'],
-    responseType: 'id_token',
+	//clientId: process.env.EXPO_PUBLIC_API_KEY,
+  expoClientId: EXPO_PUBLIC_API_KEY,
+  iosClientId: EXPO_PUBLIC_API_KEY,
+  androidClientId: EXPO_PUBLIC_API_ANDROID_KEY,
+  webClientId: EXPO_PUBLIC_API_KEY,
+    //redirectUri: url,
+    //redirectUri: "https://growthmate.link/oauth2/authorization/google",
+  
 });
-  /*
-  const [request, response, promptAsync] = Google.useIdTokenAuthRequest(
-    {
-	clientId: process.env.EXPO_PUBLIC_google_clientId,
-  androidClientId: process.env.EXPO_PUBLIC_google_androidClientId,
-    },
-  );
-*/
+
+const [userInfo, setUserInfo] = React.useState(null);
+
+  // Google 로그인 처리하는 함수
+  const handleSignInWithGoogle = async () => {
+    const user = await AsyncStorage.getItem("@user");
+    if (!user) {
+      if (response?.type === "success") {
+        // 인증 요청에 대한 응답이 성공이면, 토큰을 이용하여 유저 정보를 가져옴.
+        await getUserInfo(response.authentication?.accessToken);
+        console.log("accessToken: ",response.authentication?.accessToken);
+      }
+    } else {
+      // 유저 정보가 이미 있으면, 유저 정보를 가져옴.
+      setUserInfo(JSON.parse(user));
+    }
+  };
+
+  // 토큰을 이용하여 유저 정보를 가져오는 함수
+  const getUserInfo = async (token) => {
+    if (!token) return;
+    try {
+      const response = await fetch(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const userInfoResponse = await response.json();
+      // 유저 정보를 AsyncStorage에 저장, 상태업뎃
+      await AsyncStorage.setItem("@user", JSON.stringify(userInfoResponse));
+      setUserInfo(userInfoResponse);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem("@user");
+    setUserInfo(null);
+  };
+
+  // Google 인증 응답이 바뀔때마다 실행
+  useEffect(() => {
+    handleSignInWithGoogle();
+  }, [response]);
+
+let id_token = null;
+/*
   useEffect(() => {
     if (response?.type === 'success') {
-      const { id_token } = response.params;
+      id_token = response.params;
       const auth = getAuth();
       const credential = GoogleAuthProvider.credential(id_token);
       signInWithCredential(auth, credential);
 
       console.log("id_token :", id_token);
-      console.log("response :", response);
+      let token = id_token.id_token;
+      console.log("token :", token);
 
       const LoginOk = async () => {
         try {
           const res = await API.post(`${API}/auth/login`, {
-            accessToken: id_token,
+            headers: { Authorization: `Bearer ${token}` },
+            accessToken: token,
           });
           console.log(res);
         } catch (error) {
@@ -64,6 +106,8 @@ const [request, response, promptAsync] = Google.useAuthRequest({
         }
       };
       LoginOk();
+
+  AsyncStorage.setItem('token', JSON.stringify(token));
 
     }
   }, [response]); // response가 바뀔 때마다 실행
@@ -81,8 +125,12 @@ const [request, response, promptAsync] = Google.useAuthRequest({
 */
 
 const BackButton = () => {
-  navigation.navigate("Main", { getuser: "test",});
-
+  if (token!==null) {
+    navigation.navigate("Main", { getuser: "test", user_id: "idtest", token: token });
+  }
+  else{
+  navigation.navigate("Main", { getuser: "test", user_id: "notlogin"});
+  }
 };
 
   return (
@@ -95,17 +143,15 @@ const BackButton = () => {
        
       <Text style={Styles.HomeText}>로그인</Text>
 
-      <TouchableOpacity disabled={!request}
-          href={`${url}/oauth2/authorization/google`}
-          onPress={() => {
-            promptAsync();
-          }}          
-          style={Styles.loginBox}>
-      <Image style={{width: 30, height: 30, alignSelf:"center", marginBottom: 10, marginLeft:"10%", marginTop:"3%"}}
-        source={require("../public/src/googleLogo.png")}
+      <Text>{JSON.stringify(userInfo, null, 2)}</Text>
+      <Button
+        disabled={!request}
+        title="Login"
+        onPress={() => {
+          promptAsync();
+        }}
       />
-      <Text style={{fontSize:20, textAlignVertical:"center", textAlign:"center", marginLeft:"8%", marginTop:"3%"}}>Google로 시작하기</Text>
-        </TouchableOpacity>
+      <Button title="logout" onPress={() => handleLogout()} />
 
     </View>
     </SafeAreaView>

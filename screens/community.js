@@ -5,11 +5,25 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Community = () => {
   const navigation = useNavigation();
+  console.log("커뮤니티 ", global.companyId);
+
+  const asyncToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      console.log("token: ", token);
+      // 자료가 없을 때 에러처리
+    } catch(e) {
+      console.log(e);
+    }
+  };
+  asyncToken();
     
+
 const writing = () => {
   navigation.navigate("WritePost");
 };
@@ -19,6 +33,7 @@ const viewPost = (id, title, content) => {
   navigation.navigate("ViewPost", {post_id: id, title: title, content: content});
 }
 
+// "postId",	"writer", "title", "preview", "createdDate", "commentCount"
 const renderItem = ({ item }) => {
   return (
     <View style={{justifyContent:"center", margin: "10%", marginTop:2, maxHeight:350}}>
@@ -43,17 +58,15 @@ const renderItem = ({ item }) => {
   );
 };
 
-
-const LIMIT = 11;
-
+const LIMIT = 10;
 const [data, setData] = useState([]);
 const [offset, setOffset] = useState(0);
 const [loading, setLoading] = useState(false);
 
 const getData = () => {
   setLoading(true);
-  fetch("//jsonplaceholder.typicode.com/posts") // web 배포에서 실행할 때
-  //fetch("https://jsonplaceholder.typicode.com/posts") 앱에서 실행할 때
+  fetch("https://jsonplaceholder.typicode.com/posts")
+  //fetch(`https://growthmate.link/api/v1/companies/${company_id}/posts?cursor=10&size=10`)
     .then((res) => res.json())
     .then((res) => setData(data.concat(res.slice(offset, offset + LIMIT))))
     .then(() => {

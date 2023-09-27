@@ -8,10 +8,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import API from '../api';
 
 const Profile = ({navigation, route}) => {
+  //let username = "닉네임";
+  //let email = "이메일";
+  //let imageUrl = null;
 
     axios.get(`${API}/api/v1/members/me`,
     {
@@ -21,8 +25,8 @@ const Profile = ({navigation, route}) => {
     })
     .then(function (response) {
       console.log(response);
-      const username = response.data.name;
-      const email = response.data.email;
+      username = response.data.name;
+      email = response.data.email;
       imageUrl = response.data.picture; // 프로필 사진
     }
     )

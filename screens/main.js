@@ -11,42 +11,127 @@ import { SearchBar } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import API from '../api';
-
 import { AntDesign } from '@expo/vector-icons';
+import { FlatList } from 'react-native-gesture-handler';
+import Company from "./company";
 
 const Main = ({navigation, route}) => {
   //const navigation = useNavigation();
+  global.companyId = 1;
+
+  let name = "회사이름";
+  let imageUrl = "이미지";
+  let businessType = "업종";
 
   axios.get(`${API}/api/v1/companies?cursor=10&size=10&sort=establisDate`)
   .then(function (response) {
-    console.log(response);
+    companyId = response.data.companyId;
+    name = response.data.name;
+    imageUrl = response.data.imageUrl;
+    businessType = response.data.businessType;
+    //console.log(response.data);
   })
 
   const {params} = route;
   const userInfo = params ? params.getuser : null;
   console.log("info: ", userInfo);
-  const user=null; // 구글로그인 화면 이동 오류로 일단 임시
+  const user = null; // 일단 임시
 
-  const saveId = async id => {
+  let token = null;
+/*
+  const asyncToken = async () => {
     try {
-        await AsyncStorage.setItem('user_id', JSON.stringify(id));
-    } catch (e) {
-        console.error(e);
+      token = await AsyncStorage.getItem("token");
+      console.log("token: ", token);
+      // 자료가 없을 때 에러처리
+    } catch(e) {
+      console.log(e);
     }
-}
-const [isLogin, setIsLogin] = useState(false); // 로그인 여부
+  };
+  asyncToken();
+*/
+  const rem = async () => {
+    try {
+      await AsyncStorage.removeItem("token");
+      console.log("remove token");
+    } catch(e) {
+      console.log(e);
+    }
+  };
+  rem();
+
+  // 로그인 여부
+const [isLogin, setIsLogin] = useState(false); 
 const getLogin = async () => {
-	if(await AsyncStorage.getItem('user_id')!== null){
+	if(await AsyncStorage.getItem('token')!== null){
 		setIsLogin(true);
+    console.log("async 로그인 됨");
 	}
   else {
     setIsLogin(false);
+    console.log("로그인 안됨");
   }
 };
+console.log("isLogin 상태: ", isLogin);
 
 useEffect(() => {
 	getLogin();
 });
+
+// 기업 flat리스트 데이터
+// "companyId", "name", "imageUrl", "businessType"
+
+const LIMIT = 10;
+const [data, setData] = useState([]);
+const [offset, setOffset] = useState(0);
+const [loading, setLoading] = useState(false);
+
+const Company = (companyId) => {
+  navigation.navigate("특정 기업", {companyId: companyId});
+}
+/*
+const renderItem = ({ item }) => {
+  return (
+    <View style={{justifyContent:"center", margin: "10%", marginTop:2, maxHeight:350}}>
+      <TouchableOpacity onPress={()=> Company(item.companyId, item.name)}
+      style={{borderWidth:1, borderRadius:"5", padding:"4%"}}>
+      <View style={{flexDirection:"row", marginBottom:"2%"}}>
+        <Image source={require(item.imageUrl)} style={{width:80, height:80}}/>
+        <Text> {item.name}</Text>
+        <View style={{flexDirection:"column", marginLeft:"4%"}}>
+        <Text>id: {item.companyId}</Text>
+        <Text>업종: {item.businessType}</Text>
+      </View></View>
+      </TouchableOpacity>
+    </View>
+  );
+};
+/*
+const getData = () => {
+  setLoading(true);
+  fetch("https://jsonplaceholder.typicode.com/posts")
+  //fetch(`${API}/api/v1/companies?cursor=10&size=10&sort=establisDate`)
+    .then((res) => res.json())
+    .then((res) => setData(data.concat(res.slice(offset, offset + LIMIT))))
+    .then(() => {
+      setOffset(offset + LIMIT);
+      setLoading(false);
+    })
+    .catch((error) => {
+      setLoading(false);
+      Alert.alert("에러가 났습니다");
+    });
+};
+
+useEffect(() => {
+  getData();
+}, []);
+*/
+
+let isWeb = false;
+if (Platform.OS === 'web') {
+  isWeb = true;
+}
 
   return (
     <SafeAreaView style={Styles.screen}>
@@ -57,7 +142,7 @@ useEffect(() => {
       <Text style={Styles.TitleText}>GrowthMate</Text>
       <TouchableOpacity style={{alignSelf:"center", marginLeft:"15%",}}
         onPress={() => !isLogin
-           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo})}
+           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo, token: token})}
        >
       <AntDesign name="user" size={33} color="black" /></TouchableOpacity>
 </View>
@@ -80,18 +165,24 @@ useEffect(() => {
         <Text style={Styles.sortText}>정렬</Text>
       </TouchableOpacity>
 
-      
+      <View>
+      { isWeb ? 
+       <Text>web env</Text> 
+        : null
+      }
+      </View>
+
         <Text>User: {JSON.stringify(userInfo)}</Text>
 
       <ScrollView pagingEnabled>
         <TouchableOpacity
-          onPress={() => navigation.navigate("특정 기업", { screen: 'Company' })}
+          onPress={() => Company(companyId)}
           style={Styles.comp}
         >
           <Text style={Styles.comptext}>특정 스타트업</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate("특정 기업", { screen: 'Company' })}
+          onPress={() =>  Company(companyId)}
           style={Styles.comp}
         >
           <Text style={Styles.comptext}>이미지 / 스타트업 기업 이름</Text>

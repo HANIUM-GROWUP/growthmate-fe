@@ -5,15 +5,42 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import API from '../api';
 
 import Intro from "./intro";
 import Community from './community';
 import Predict from './predict';
 import Compare from './compare';
 import News from './news';
+import axios from 'axios';
 
 
 const Company = ({navigation, route}) => {
+  const {params} = route;
+  let companyId = params ? params.companyId : null;
+  console.log("companyId: ", companyId);
+
+  let name = "회사명";
+  let imageUrl = "image";
+  let businessType = "업종";
+  let establishmentDate = "설립일";
+  let address = "주소";
+  let employeeNumber = "직원수";
+  let sales = "매출액";
+
+  axios.get(`${API}/api/v1/companies/${companyId}`)
+  .then(function (response) {
+    name = response.data.name;
+    imageUrl = response.data.image_url;
+    businessType = response.data.business_type;
+    establishmentDate = response.data.establishment_date;
+    address = response.data.address;
+    employeeNumber = response.data.employee_number;
+    sales = response.data.sales;
+    console.log(response);
+  })
+
 
   const [introing, setIntro] = useState(true);
   const [predicting, setPredict] = useState(false);
@@ -62,8 +89,14 @@ const Company = ({navigation, route}) => {
     navigation.navigate("Main");
 };
 
+
+let isWeb = false;
+if (Platform.OS === 'web') {
+  isWeb = true;
+}
     return (
       <SafeAreaView style={Styles.screen}>
+{ !isWeb ?
       <View style={Styles.container}>    
       <View style={{flex:1}}> 
       <StatusBar style="auto" />
@@ -103,8 +136,53 @@ const Company = ({navigation, route}) => {
           {comparing ? <Compare /> : null}
           {newsing ? <News /> : null}
           {communitying ? <Community />  : null}
+          
         </View>
-      </View></SafeAreaView>
+      </View>
+    :
+    // Web
+    <View style={Styles.container}>    
+
+    <StatusBar style="auto" />
+    <TouchableOpacity onPress={() => BackButton()}>
+    <Ionicons name="chevron-back" size={33} color="black" />
+    </TouchableOpacity>
+      <View style={{flexDirection:"row", paddingBottom:"2%", padding:"5%", marginLeft:"4%", paddingTop:"2%"}}>
+      <Image source={require("../public/src/bitmango.png")} style={{width:100, height:100}}/>
+      <View style={{flexDirection:"column", paddingLeft:"10%", paddingTop:"5%"}}>
+      <Text style={{fontSize:20, paddingBottom:"10%"}}>비트망고</Text>
+      <Text style={{fontSize:16, }}>정보통신업</Text>
+      </View>
+      </View>
+
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{maxHeight:"18%", borderBottomWidth:0.4}}>
+        <TouchableOpacity style={Styles.category} onPress={intro}>
+        <Text style={Styles.cateText}>기업 소개</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={Styles.category} onPress={predict}>
+        <Text style={Styles.cateText}>예측 분석, 피드백</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={Styles.category} onPress={compare}>
+        <Text style={Styles.cateText}>동일 업종내 비교</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={Styles.category} onPress={news}>
+        <Text style={Styles.cateText}>언론</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={Styles.category} onPress={community}>
+        <Text style={Styles.cateText}>커뮤니티</Text>
+        </TouchableOpacity>
+      </ScrollView>
+
+        {introing ? <Intro /> : null}
+        {predicting ? <Predict /> : null}
+        {comparing ? <Compare /> : null}
+        {newsing ? <News /> : null}
+        {communitying ? <Community />  : null}
+    </View>
+    
+    
+    }
+      </SafeAreaView>
     )
   }
 

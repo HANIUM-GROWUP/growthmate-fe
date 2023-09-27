@@ -13,13 +13,24 @@ import axios from 'axios';
 import { Octicons } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
 import constants from '../constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import API from '../api';
 
 const ViewPost = ({navigation, route}) => {
-  const BackButton = () => {
-    navigation.navigate("특정 기업"); 
+
+  let companyId = global.companyId;
+
+const asyncToken = async () => {
+  try {
+    const token = await AsyncStorage.getItem("token");
+    console.log("token: ", token);
+    // 자료가 없을 때 에러처리
+  } catch(e) {
+    console.log(e);
+  }
 };
+asyncToken();
 
 let writer = "작성자 이름";
 let title = "제목";
@@ -93,8 +104,7 @@ const [loading, setLoading] = useState(false);
 
 const getData = () => {
   setLoading(true);
-  fetch("//jsonplaceholder.typicode.com/comments")
-  //fetch("https://jsonplaceholder.typicode.com/comments") // 앱에서 실행할 때
+  fetch("https://jsonplaceholder.typicode.com/comments")
     .then((res) => res.json())
     .then((res) => setData(commentData.concat(res.slice(offset, offset + LIMIT))))
     .then(() => {
@@ -128,7 +138,7 @@ console.log("title: ", title);
 
 const [isMyPost, setIsMyPost] = useState(true); // 내가 쓴 글인지 확인
 const [isMyComment, setIsMyComment] = useState(true); // 내가 쓴 댓글인지 확인
-// test 중이라서 true로 설정해놓음. 나중에 false로 바꿔야 함.
+// test 중이라서 true로 설정해놓음. 나중에 기본값 false로 바꿔야 함.
 
 const editPost = () => {
   navigation.navigate("EditPost", {post_id: post_id, title: title, content: content});
@@ -140,7 +150,7 @@ const deletePost = () => {
     {text: "Yes", style: "destructive",
     onPress: async() => {
   axios.delete(`${API}/api/v1/posts/{post_id}`);
-  navigation.navigate("특정 기업");
+  navigation.navigate("특정 기업", {companyId: global.companyId});
     },},
   ]);
 };

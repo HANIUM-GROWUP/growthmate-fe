@@ -45,7 +45,7 @@ function StackScreen() {
         <Stack.Screen name="ViewPost" component={ViewPost} options={{title: "post", headerBackTitleVisible:false,
     headerLeft: () => (
         <TouchableOpacity
-            onPress={() => {navigation.navigate("특정 기업");}}
+            onPress={() => {navigation.navigate("특정 기업", {companyId: global.companyId});}}
             style={{ marginLeft: 10 }}
         >
             <Ionicons name="chevron-back" size={33} color="black" />

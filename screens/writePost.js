@@ -12,14 +12,25 @@ import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
 import { API } from '../api';
 import { Octicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // 커뮤니티 글 작성 페이지
 
 const WritePost = () => {
   const navigation = useNavigation();
+  const asyncToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      console.log("token: ", token);
+      // 자료가 없을 때 에러처리
+    } catch(e) {
+      console.log(e);
+    }
+  };
+  asyncToken();
   
   const BackButton = () => {
-    navigation.navigate("특정 기업");
+    navigation.navigate("특정 기업", {companyId: global.companyId});
 };
 
 // 글 작성 완료 버튼
@@ -43,7 +54,7 @@ const DoneButton = () => {
   .catch(function (error) {
     console.log(error);
   });
-  navigation.navigate("특정 기업");
+  navigation.navigate("특정 기업", {companyId: global.companyId});
   }
 };
 
