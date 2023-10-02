@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, BackHandler, Image, TextInput } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, TextInput, Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -112,6 +112,9 @@ const Profile = ({navigation, route}) => {
 
 };
 
+const handleLogout = async () => {
+  await AsyncStorage.removeItem("token");
+};
 
     return (
         <SafeAreaView style={Styles.screen}>
@@ -146,6 +149,8 @@ const Profile = ({navigation, route}) => {
         <Text style={{fontSize:14, marginRight:"4%"}}>구글 계정</Text>
         <Text style={{fontSize:17,}}>example123@gmail.com</Text>
         </View>
+
+        <Button title="logout" onPress={() => handleLogout()} />
         </View>
       </View></SafeAreaView>
     )

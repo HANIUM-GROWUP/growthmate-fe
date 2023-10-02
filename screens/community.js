@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Community = () => {
   const navigation = useNavigation();
-  console.log("커뮤니티 ", global.companyId);
+  console.log("커뮤니티 ", global.comapany_id);
 
   const asyncToken = async () => {
     try {

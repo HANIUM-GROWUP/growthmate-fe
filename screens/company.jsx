@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image,ActivityIndicator} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,26 +18,19 @@ import axios from 'axios';
 
 const Company = ({navigation, route}) => {
   const {params} = route;
-  let companyId = params ? params.companyId : null;
-  console.log("companyId: ", companyId);
+  let comapany_id = params ? params.comapany_id : null;
+  console.log("comapany_id: ", comapany_id);
+
 
   let name = "회사명";
   let imageUrl = "image";
   let businessType = "업종";
-  let establishmentDate = "설립일";
-  let address = "주소";
-  let employeeNumber = "직원수";
-  let sales = "매출액";
 
-  axios.get(`${API}/api/v1/companies/${companyId}`)
+  axios.get(`${API}/api/v1/companies/${comapany_id}`)
   .then(function (response) {
     name = response.data.name;
     imageUrl = response.data.image_url;
     businessType = response.data.business_type;
-    establishmentDate = response.data.establishment_date;
-    address = response.data.address;
-    employeeNumber = response.data.employee_number;
-    sales = response.data.sales;
     console.log(response);
   })
 

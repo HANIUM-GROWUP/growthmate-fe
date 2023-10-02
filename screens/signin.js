@@ -23,6 +23,8 @@ import * as AuthSession from 'expo-auth-session';
 WebBrowser.maybeCompleteAuthSession();
 
 const Signin = ({navigation, route}) => {
+  let token = null;
+
 const url = "https://auth.expo.io/@dhdld/growup"; // redirect url
 const [request, response, promptAsync] = Google.useAuthRequest({
 	//clientId: process.env.EXPO_PUBLIC_API_KEY,
@@ -45,11 +47,14 @@ const [userInfo, setUserInfo] = React.useState(null);
         // 인증 요청에 대한 응답이 성공이면, 토큰을 이용하여 유저 정보를 가져옴.
         await getUserInfo(response.authentication?.accessToken);
         console.log("accessToken: ",response.authentication?.accessToken);
+        token = response.authentication?.accessToken;
+        await AsyncStorage.setItem("token", JSON.stringify(token));
       }
     } else {
       // 유저 정보가 이미 있으면, 유저 정보를 가져옴.
       setUserInfo(JSON.parse(user));
     }
+    
   };
 
   // 토큰을 이용하여 유저 정보를 가져오는 함수
@@ -81,7 +86,6 @@ const [userInfo, setUserInfo] = React.useState(null);
     handleSignInWithGoogle();
   }, [response]);
 
-let id_token = null;
 /*
   useEffect(() => {
     if (response?.type === 'success') {
@@ -129,7 +133,7 @@ const BackButton = () => {
     navigation.navigate("Main", { getuser: "test", user_id: "idtest", token: token });
   }
   else{
-  navigation.navigate("Main", { getuser: "test", user_id: "notlogin"});
+  navigation.navigate("Main", { getuser: "not", user_id: "notlogin"});
   }
 };
 
