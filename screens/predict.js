@@ -16,7 +16,7 @@ const Predict = () => {
   let technology = "기술력";
   let financialStability = "재무성";
 
-  axios.get(`${API}/api/v1/companies/{comapany_id}/analyze`)
+  axios.get(`${API}/api/v1/companies/${company_id}/analyze`)
   .then(function (response) {
     console.log(response);
     growth = response.data.growth;

@@ -17,7 +17,7 @@ import Company from "./company";
 
 const Main = ({navigation, route}) => {
   //const navigation = useNavigation();
-  global.comapany_id = 1;
+  global.company_id = 1;
 
   let name = "회사이름";
   let imageUrl = "이미지";
@@ -25,11 +25,11 @@ const Main = ({navigation, route}) => {
 
   axios.get(`${API}/api/v1/companies?cursor=10&size=10&sort=establisDate`)
   .then(function (response) {
-    comapany_id = response.data.companyId;
+    company_id = response.data.companyId;
     name = response.data.name;
     imageUrl = response.data.imageUrl;
     businessType = response.data.businessType;
-    //console.log(response.data);
+    console.log(response);
   })
 
   const {params} = route;
@@ -79,15 +79,15 @@ useEffect(() => {
 });
 
 // 기업 flat리스트 데이터
-// "comapany_id", "name", "imageUrl", "businessType"
+// "company_id", "name", "imageUrl", "businessType"
 
 const LIMIT = 10;
 const [data, setData] = useState([]);
 const [offset, setOffset] = useState(0);
 const [loading, setLoading] = useState(false);
 
-const Company = (comapany_id) => {
-  navigation.navigate("특정 기업", {comapany_id: comapany_id});
+const Company = (company_id) => {
+  navigation.navigate("특정 기업", {company_id: company_id});
 }
 /*
 const renderItem = ({ item }) => {
@@ -176,13 +176,13 @@ if (Platform.OS === 'web') {
 
       <ScrollView pagingEnabled>
         <TouchableOpacity
-          onPress={() => Company(comapany_id)}
+          onPress={() => Company(company_id)}
           style={Styles.comp}
         >
           <Text style={Styles.comptext}>특정 스타트업</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() =>  Company(comapany_id)}
+          onPress={() =>  Company(company_id)}
           style={Styles.comp}
         >
           <Text style={Styles.comptext}>이미지 / 스타트업 기업 이름</Text>

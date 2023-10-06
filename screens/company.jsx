@@ -18,15 +18,15 @@ import axios from 'axios';
 
 const Company = ({navigation, route}) => {
   const {params} = route;
-  let comapany_id = params ? params.comapany_id : null;
-  console.log("comapany_id: ", comapany_id);
+  let company_id = params ? params.company_id : null;
+  console.log("company_id: ", company_id);
 
 
   let name = "회사명";
   let imageUrl = "image";
   let businessType = "업종";
 
-  axios.get(`${API}/api/v1/companies/${comapany_id}`)
+  axios.get(`${API}/api/v1/companies/${company_id}`)
   .then(function (response) {
     name = response.data.name;
     imageUrl = response.data.image_url;
