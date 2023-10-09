@@ -44,7 +44,7 @@ const DoneButton = () => {
     return;
   }
   else {
-  axios.post(`${API}/v1/companies/{company_id}/posts`, {
+  axios.post(`https://growthmate.link/v1/companies/${company_id}/posts`, {
     title: title,
     content: content,
   })

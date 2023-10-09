@@ -17,7 +17,7 @@ const Profile = ({navigation, route}) => {
   //let email = "이메일";
   //let imageUrl = null;
 
-    axios.get(`${API}/api/v1/members/me`,
+    axios.get(`https://growthmate.link/api/v1/members/me`,
     {
       headers: {
         'Authorization': 'Bearer ' + route.params.token
@@ -56,7 +56,7 @@ const Profile = ({navigation, route}) => {
           alert("닉네임이 변경되었습니다.");
         setUsername(username);
         console.log("save: ",username);
-        axios.patch(`${API}/api/v1/members/me`, {
+        axios.patch(`https://growthmate.link/api/v1/members/me`, {
           name: username,
         })
         .then(function (response) {
@@ -104,7 +104,7 @@ const Profile = ({navigation, route}) => {
       const formData = new FormData();
       formData.append('image', { uri: localUri, name: filename, type });
 
-      axios.patch(`${API}/api/v1/members/me`,
+      axios.patch(`https://growthmate.link/api/v1/members/me`,
       {
         data: formData,
         headers: { 'Content-Type': 'multipart/form-data' },

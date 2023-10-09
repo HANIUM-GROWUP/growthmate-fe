@@ -100,7 +100,7 @@ const [userInfo, setUserInfo] = React.useState(null);
 
       const LoginOk = async () => {
         try {
-          const res = await API.post(`${API}/auth/login`, {
+          const res = await API.post(`https://growthmate.link/auth/login`, {
             headers: { Authorization: `Bearer ${token}` },
             accessToken: token,
           });

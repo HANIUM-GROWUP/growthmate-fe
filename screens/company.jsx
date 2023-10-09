@@ -26,7 +26,7 @@ const Company = ({navigation, route}) => {
   let imageUrl = "image";
   let businessType = "업종";
 
-  axios.get(`${API}/api/v1/companies/${company_id}`)
+  axios.get(`https://growthmate.link/api/v1/companies/${company_id}`)
   .then(function (response) {
     name = response.data.name;
     imageUrl = response.data.image_url;

@@ -37,7 +37,7 @@ let title = "제목";
 let postContent = "내용";
 let postCreatedDate = "작성 날짜";
 //게시글 상세 조회 
-  axios.get(`${API}/api/api/v1/posts/${post_id}`)
+  axios.get(`https://growthmate.link/api/v1/posts/${post_id}`)
   .then(function (response) {
     console.log(response.data);
     writer = response.data.writer;
@@ -55,7 +55,7 @@ let commentWriter = "댓글 작성자";
 let commentContent = "댓글 내용";
 let commentCreatedDate = "댓글 작성 날짜";
 // 댓글 조회
-  axios.get(`${API}/api/v1/posts/${post_id}/comments?cursor=10&size=10`)
+  axios.get(`https://growthmate.link/api/v1/posts/${post_id}/comments?cursor=10&size=10`)
   .then(function (response) {
     console.log(response);
     commentId = response.data.commentId;
@@ -149,7 +149,7 @@ const deletePost = () => {
     {text: "Cancel"},
     {text: "Yes", style: "destructive",
     onPress: async() => {
-  axios.delete(`${API}/api/v1/posts/{post_id}`);
+  axios.delete(`https://growthmate.link/api/v1/posts/{post_id}`);
   navigation.navigate("특정 기업", {companyId: global.companyId});
     },},
   ]);
@@ -160,7 +160,7 @@ const editComment = () => {
     {text: "Cancel"},
     {text: "Yes",
     onPress: async() => {
-      axios.patch(`${API}/api/v1/comments/{comment_id}`) 
+      axios.patch(`https://growthmate.link/api/v1/comments/{comment_id}`) 
 
     },},
   ]);
@@ -171,7 +171,7 @@ const deleteComment = () => {
     {text: "Cancel"},
     {text: "Yes", style: "destructive",
     onPress: async() => {
-      axios.delete(`${API}/api/v1/comments/{comment_id}`);
+      axios.delete(`https://growthmate.link/api/v1/comments/{comment_id}`);
       this.refresh();
     },},
   ]);
@@ -182,7 +182,7 @@ const [comment, setComment] = useState('');
 // 댓글 등록
 const uploadComment = () => {
   alert("댓글을 등록합니다.");
-  axios.post(`${API}/api/v1/posts/{post_id}/comments`, {
+  axios.post(`https://growthmate.link/api/v1/posts/{post_id}/comments`, {
     content: comment,
   })
   .then(function (response) {

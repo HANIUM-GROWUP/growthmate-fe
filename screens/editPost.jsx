@@ -48,7 +48,7 @@ const DoneButton = () => {
     return;
   }
   else {
-  axios.patch(`${API}/api/v1/posts/{post_id}`, {
+  axios.patch(`https://growthmate.link/api/v1/posts/${post_id}`, {
     title: title,
     content: content,
   })

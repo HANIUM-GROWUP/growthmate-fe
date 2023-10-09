@@ -23,9 +23,9 @@ const Main = ({navigation, route}) => {
   let imageUrl = "이미지";
   let businessType = "업종";
 
-  axios.get(`${API}/api/v1/companies?cursor=10&size=10&sort=establisDate`)
+  axios.get(`https://growthmate.link/api/v1/companies?cursor=10&size=10&sort=establisDate`)
   .then(function (response) {
-    company_id = response.data.companyId;
+    //company_id = response.data.companyId; // 아직 undefined
     name = response.data.name;
     imageUrl = response.data.imageUrl;
     businessType = response.data.businessType;
@@ -35,7 +35,6 @@ const Main = ({navigation, route}) => {
   const {params} = route;
   const userInfo = params ? params.getuser : null;
   console.log("info: ", userInfo);
-  const user = null; // 일단 임시
 
   let token = null;
 
@@ -110,7 +109,7 @@ const renderItem = ({ item }) => {
 const getData = () => {
   setLoading(true);
   fetch("https://jsonplaceholder.typicode.com/posts")
-  //fetch(`${API}/api/v1/companies?cursor=10&size=10&sort=establisDate`)
+  //fetch(`https://growthmate.link/api/v1/companies?cursor=10&size=10&sort=establisDate`)
     .then((res) => res.json())
     .then((res) => setData(data.concat(res.slice(offset, offset + LIMIT))))
     .then(() => {

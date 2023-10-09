@@ -9,7 +9,7 @@ const Intro = () => {
   let employeeNumber = "직원수";
   let sales = "매출액";
 
-  axios.get(`${API}/api/v1/companies/${company_id}`)
+  axios.get(`https://growthmate.link/api/v1/companies/${company_id}`)
   .then(function (response) {
     console.log(response);
     establishmentDate = response.data.establishmentDate;

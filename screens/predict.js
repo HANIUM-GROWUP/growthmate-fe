@@ -1,6 +1,6 @@
 import axios from 'axios';
-import React, { PureComponent, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import React, { PureComponent, useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
@@ -16,7 +16,7 @@ const Predict = () => {
   let technology = "기술력";
   let financialStability = "재무성";
 
-  axios.get(`${API}/api/v1/companies/${company_id}/analyze`)
+  axios.get(`https://growthmate.link/api/v1/companies/${company_id}/analyze`)
   .then(function (response) {
     console.log(response);
     growth = response.data.growth;
@@ -25,7 +25,20 @@ const Predict = () => {
     technology = response.data.technology;
     financialStability = response.data.financialStability;
   });
-  
+/*
+  const getData = () => {
+    fetch(`https://growthmate.link/api/v1/companies/${company_id}/analyze`)
+    //fetch(`https://growthmate.link/api/v1/companies/${company_id}/posts?cursor=10&size=10`)
+      .then((res) => res.json())
+      .catch((error) => {
+        Alert.alert("에러가 났습니다");
+        console.error(error);
+      });
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+*/
   const data = [ // 차트에 들어갈 data 지정
   {
   type: 'scatterpolar', // chart type
