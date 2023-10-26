@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -14,23 +14,13 @@ import API from '../api';
 import { AntDesign } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
 import Company from "./company";
+import DropDownPicker from "react-native-dropdown-picker";
 
 const Main = ({navigation, route}) => {
-  //const navigation = useNavigation();
-  global.company_id = 1;
 
   let name = "회사이름";
   let imageUrl = "이미지";
   let businessType = "업종";
-
-  axios.get(`https://growthmate.link/api/v1/companies?cursor=10&size=10&sort=establisDate`)
-  .then(function (response) {
-    //company_id = response.data.companyId; // 아직 undefined
-    name = response.data.name;
-    imageUrl = response.data.imageUrl;
-    businessType = response.data.businessType;
-    console.log(response);
-  })
 
   const {params} = route;
   const userInfo = params ? params.getuser : null;
@@ -48,17 +38,7 @@ const Main = ({navigation, route}) => {
     }
   };
   asyncToken();
-/*
-  const rem = async () => {
-    try {
-      await AsyncStorage.removeItem("token");
-      console.log("remove token");
-    } catch(e) {
-      console.log(e);
-    }
-  };
-  rem();
-*/
+
   // 로그인 여부
 const [isLogin, setIsLogin] = useState(false); 
 const getLogin = async () => {
@@ -82,34 +62,38 @@ useEffect(() => {
 
 const LIMIT = 10;
 const [data, setData] = useState([]);
+const [dataSales, setDataSales] = useState([]);
+
 const [offset, setOffset] = useState(0);
 const [loading, setLoading] = useState(false);
 
 const Company = (company_id) => {
   navigation.navigate("특정 기업", {company_id: company_id});
 }
-/*
+
 const renderItem = ({ item }) => {
   return (
-    <View style={{justifyContent:"center", margin: "10%", marginTop:2, maxHeight:350}}>
-      <TouchableOpacity onPress={()=> Company(item.companyId, item.name)}
-      style={{borderWidth:1, borderRadius:"5", padding:"4%"}}>
-      <View style={{flexDirection:"row", marginBottom:"2%"}}>
-        <Image source={require(item.imageUrl)} style={{width:80, height:80}}/>
-        <Text> {item.name}</Text>
-        <View style={{flexDirection:"column", marginLeft:"4%"}}>
-        <Text>id: {item.companyId}</Text>
-        <Text>업종: {item.businessType}</Text>
+    <View style={{justifyContent:"center", margin: "2%", marginTop:2, maxHeight:330}}>
+      <TouchableOpacity onPress={()=> Company(item.companyId)}
+      style={{padding:"2%"}}>
+      <View style={{flexDirection:"row", marginBottom:"2%", marginLeft:"2%"}}>
+        { item.imageUrl === "" ? <View style={{width:80, height:80}}></View> : 
+        <Image source={{uri: item.imageUrl}} style={{width:78, height:78, 
+          borderRadius:10,}}/>
+        }
+        <View style={{flexDirection:"column", marginLeft:"6%", marginTop:11}}>
+        <Text style={{fontSize:16, fontWeight: 'bold'}}>{item.name}</Text>
+        <Text style={{fontSize:13, marginTop:9}}>{item.businessType}</Text>
       </View></View>
       </TouchableOpacity>
     </View>
   );
 };
-/*
-const getData = () => {
+
+// 설립일순 정렬(default)
+const getDataByDate = () => {
   setLoading(true);
-  fetch("https://jsonplaceholder.typicode.com/posts")
-  //fetch(`https://growthmate.link/api/v1/companies?cursor=10&size=10&sort=establisDate`)
+  fetch(`https://growthmate.link/api/v1/companies?cursor=10&size=355&sort=establisDate`)
     .then((res) => res.json())
     .then((res) => setData(data.concat(res.slice(offset, offset + LIMIT))))
     .then(() => {
@@ -122,21 +106,92 @@ const getData = () => {
     });
 };
 
-useEffect(() => {
-  getData();
-}, []);
+// 매출액순 정렬
+const getDataBySales = () => {
+  setLoading(true);
+  fetch(`https://growthmate.link/api/v1/companies?cursor=10&size=355&sort=sales`)
+    .then((res) => res.json())
+    .then((res) => setDataSales(dataSales.concat(res.slice(offset, offset + LIMIT))))
+    .then(() => {
+      setOffset(offset + LIMIT);
+      setLoading(false);
+    })
+    .catch((error) => {
+      setLoading(false);
+      Alert.alert("에러가 났습니다");
+    });
+};
+
+/*
+const sortBy = () => {
+  if(sortByDate) {
+    //setData([]);
+    setDataSales([]);
+    getDataBySales();
+    setSortByDate(false);
+    setSortBySales(true);
+  }
+  else {
+    setData([]);
+   // setDataSales([]);
+    getDataByDate();
+    setSortByDate(true);
+    setSortBySales(false);
+  }
+  console.log("sortByDate: ", sortByDate);
+}
+      <TouchableOpacity onPress={() => sortBy()}
+        style={Styles.sort}
+      >
+        <Text style={Styles.sortText}>정렬</Text>
+      </TouchableOpacity>
 */
+
+const [sortByDate, setSortByDate] = useState(true);
+const [sortBySales, setSortBySales] = useState(false);
+
+useEffect(() => {
+  if(sortBySales) getDataBySales();
+  else getDataByDate();
+  console.log("sortByDate: ", sortByDate);
+}, []);
+const onEndReached = () => {
+  if (loading) {
+    return; // 로딩 중 계속 호출(fetch) 되는 것을 막는다.
+  } else {
+    if(sortBySales) getDataBySales();
+    else getDataByDate();
+  }
+};
+
 
 let isWeb = false;
 if (Platform.OS === 'web') {
   isWeb = true;
 }
 
+// 정렬 기능
+const [open, setOpen] = useState(false);
+const [value, setValue] = useState();
+const [items, setItems] = useState([
+  {label: '설립일순', value: 'date'},
+  {label: '자산순', value: 'sale'}
+]);
+
   return (
     <SafeAreaView style={Styles.screen}>
     <View style={Styles.container}>
       <StatusBar style="auto" />
-      <View style={{ flexDirection: "row", width:"100%", height:"8%", justifyContent:"center",
+ { isWeb ?     <View style={{ flexDirection: "row", width:"100%", height:"2%", justifyContent:"center",
+    }}>
+      <Text style={Styles.TitleText}>GrowthMate</Text>
+      <TouchableOpacity style={{alignSelf:"center", marginLeft:"15%",}}
+        onPress={() => !isLogin
+           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo, token: token})}
+       >
+      <AntDesign name="user" size={33} color="black" /></TouchableOpacity>
+</View> :
+     <View style={{ flexDirection: "row", width:"100%", height:45, justifyContent:"center",
     }}>
       <Text style={Styles.TitleText}>GrowthMate</Text>
       <TouchableOpacity style={{alignSelf:"center", marginLeft:"15%",}}
@@ -145,6 +200,7 @@ if (Platform.OS === 'web') {
        >
       <AntDesign name="user" size={33} color="black" /></TouchableOpacity>
 </View>
+}
         <SearchBar
           round
           lightTheme
@@ -158,11 +214,44 @@ if (Platform.OS === 'web') {
           placeholder="Search..."
         />     
 
-      <TouchableOpacity
-        style={Styles.sort}
-      >
-        <Text style={Styles.sortText}>정렬</Text>
-      </TouchableOpacity>
+      <DropDownPicker
+      open={open}
+      value={value}
+      items={items}
+      setOpen={setOpen}
+      setValue={setValue}
+      setItems={setItems}
+      style={{width: 100, marginLeft:"7%", marginTop:"2%", backgroundColor:"#4FD391", borderRadius:8, borderWidth:0,}}
+      placeholder="정렬"
+      textStyle={{color:"white"}}
+      listItemContainerStyle={{backgroundColor:"#4FD391", }}
+      dropDownContainerStyle={{backgroundColor:"#4FD391", width:59, marginLeft:"7%", marginTop:"2%", borderWidth:0,}}
+      //defaultValue={value}
+      onChangeValue={(value) => {
+        if(value === "date") {
+          //setData([]);
+          navigation.reset({
+            routes: [{ name: 'Main' }],
+          });
+          setDataSales([]);
+          getDataByDate();
+          setSortByDate(true);
+          setSortBySales(false);
+          
+          console.log("sortByDate: ", sortByDate);
+        }
+        else {
+          navigation.reset({
+            routes: [{ name: 'Main', params: { sortBySales: true, sortByDate:false } }],
+          });
+          setData([]);
+          //setDataSales([]);
+          getDataBySales();
+          setSortByDate(false);
+          setSortBySales(true);
+        }
+      }}
+    />
 
       <View>
       { isWeb ? 
@@ -170,36 +259,27 @@ if (Platform.OS === 'web') {
         : null
       }
       </View>
+        <View style={{margin:10}}></View>
 
-        <Text>User: {JSON.stringify(userInfo)}</Text>
+    { sortByDate ?
+        <FlatList nestedScrollEnabled 
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item) => String(item.id)}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.8}
+        ListFooterComponent={loading && <ActivityIndicator />}
+      /> : 
+      <FlatList nestedScrollEnabled 
+      data={dataSales}
+      renderItem={renderItem}
+      keyExtractor={(item) => String(item.id)}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={0.8}
+      ListFooterComponent={loading && <ActivityIndicator />}
+      />
+      }
 
-      <ScrollView pagingEnabled>
-        <TouchableOpacity
-          onPress={() => Company(company_id)}
-          style={Styles.comp}
-        >
-          <Text style={Styles.comptext}>특정 스타트업</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() =>  Company(company_id)}
-          style={Styles.comp}
-        >
-          <Text style={Styles.comptext}>이미지 / 스타트업 기업 이름</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => navigation.navigate("특정 기업", { screen: 'Company' })}
-          style={Styles.comp}
-        >
-          <Text style={Styles.comptext}>특정 스타트업</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("특정 기업", { screen: 'Company' })}
-          style={Styles.comp}
-        >
-          <Text style={Styles.comptext}>특정 스타트업</Text>
-        </TouchableOpacity>
-      </ScrollView>
 
     </View>
     </SafeAreaView>
@@ -250,7 +330,7 @@ const Styles = StyleSheet.create({
         marginTop: "5%",
         marginLeft: "7%",
         width: "85%",
-        borderRadius: 10,
+        borderRadius: 5,
         borderWidth: 0.5,
     },
     comptext: {

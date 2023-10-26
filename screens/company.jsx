@@ -18,22 +18,30 @@ import axios from 'axios';
 
 const Company = ({navigation, route}) => {
   const {params} = route;
-  let company_id = params ? params.company_id : null;
+  company_id = params ? params.company_id : null;
   console.log("company_id: ", company_id);
 
 
   let name = "회사명";
   let imageUrl = "image";
   let businessType = "업종";
+  const [info, setInfo] = useState([]);
 
+  const getData = async() => {
   axios.get(`https://growthmate.link/api/v1/companies/${company_id}`)
   .then(function (response) {
     name = response.data.name;
-    imageUrl = response.data.image_url;
-    businessType = response.data.business_type;
-    console.log(response);
-  })
+    imageUrl = response.data.imageUrl;
+    businessType = response.data.businessType;
 
+    setInfo([name, imageUrl, businessType]);
+  })
+}
+useEffect(() => {
+  getData();
+}
+, []);
+console.log("info: ", info);
 
   const [introing, setIntro] = useState(true);
   const [predicting, setPredict] = useState(false);
@@ -96,11 +104,11 @@ if (Platform.OS === 'web') {
       <TouchableOpacity onPress={() => BackButton()}>
       <Ionicons name="chevron-back" size={33} color="black" />
       </TouchableOpacity>
-        <View style={{flexDirection:"row", paddingBottom:"2%", padding:"5%", marginLeft:"4%", paddingTop:"2%"}}>
-        <Image source={require("../public/src/bitmango.png")} style={{width:100, height:100}}/>
-        <View style={{flexDirection:"column", paddingLeft:"10%", paddingTop:"5%"}}>
-        <Text style={{fontSize:20, paddingBottom:"10%"}}>비트망고</Text>
-        <Text style={{fontSize:16, }}>정보통신업</Text>
+      <View style={{flexDirection:"row", paddingBottom:"2%", padding:"4%", marginLeft:"4%", paddingTop:"2%"}}>
+      <Image source={{uri: `${info[1]}`}} style={{width:100, height:100}}/>
+      <View style={{flexDirection:"column", paddingLeft:"7%", paddingTop:"5%", flex:1}}>
+      <Text style={{fontSize:20, paddingBottom:"9%"}}>{info[0]}</Text>
+      <Text style={{fontSize:15}}>{info[2]}</Text>
         </View>
         </View>
 
@@ -109,10 +117,10 @@ if (Platform.OS === 'web') {
           <Text style={Styles.cateText}>기업 소개</Text>
           </TouchableOpacity>
           <TouchableOpacity style={Styles.category} onPress={predict}>
-          <Text style={Styles.cateText}>예측 분석, 피드백</Text>
+          <Text style={Styles.cateText}>예측 분석</Text>
           </TouchableOpacity>
           <TouchableOpacity style={Styles.category} onPress={compare}>
-          <Text style={Styles.cateText}>동일 업종내 비교</Text>
+          <Text style={Styles.cateText}>업종내 비교</Text>
           </TouchableOpacity>
           <TouchableOpacity style={Styles.category} onPress={news}>
           <Text style={Styles.cateText}>언론</Text>
@@ -141,10 +149,10 @@ if (Platform.OS === 'web') {
     <Ionicons name="chevron-back" size={33} color="black" />
     </TouchableOpacity>
       <View style={{flexDirection:"row", paddingBottom:"2%", padding:"5%", marginLeft:"4%", paddingTop:"2%"}}>
-      <Image source={require("../public/src/bitmango.png")} style={{width:100, height:100}}/>
-      <View style={{flexDirection:"column", paddingLeft:"10%", paddingTop:"5%"}}>
-      <Text style={{fontSize:20, paddingBottom:"10%"}}>비트망고</Text>
-      <Text style={{fontSize:16, }}>정보통신업</Text>
+      <Image source={{uri: `${info[1]}`}} style={{width:100, height:100}}/>
+      <View style={{flexDirection:"column", paddingLeft:"5%", paddingTop:"5%", flex:1, height:40}}>
+      <Text style={{fontSize:20, paddingBottom:"9%"}}>{info[0]}</Text>
+      <Text style={{fontSize:16, }}>{info[2]}</Text>
       </View>
       </View>
 
@@ -153,10 +161,10 @@ if (Platform.OS === 'web') {
         <Text style={Styles.cateText}>기업 소개</Text>
         </TouchableOpacity>
         <TouchableOpacity style={Styles.category} onPress={predict}>
-        <Text style={Styles.cateText}>예측 분석, 피드백</Text>
+        <Text style={Styles.cateText}>예측 분석</Text>
         </TouchableOpacity>
         <TouchableOpacity style={Styles.category} onPress={compare}>
-        <Text style={Styles.cateText}>동일 업종내 비교</Text>
+        <Text style={Styles.cateText}>업종내 비교</Text>
         </TouchableOpacity>
         <TouchableOpacity style={Styles.category} onPress={news}>
         <Text style={Styles.cateText}>언론</Text>
@@ -200,8 +208,8 @@ const Styles = StyleSheet.create({
     textAlign: "center",
   },
   category: {
-    padding: 6,
-    width: 93,
+    padding: 14,
+    //width: 88,
     justifyContent: "center",
   },
   cateText: {

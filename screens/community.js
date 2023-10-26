@@ -10,7 +10,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Community = () => {
   const navigation = useNavigation();
-  console.log("커뮤니티 ", global.company_id);
 
   const asyncToken = async () => {
     try {
@@ -38,7 +37,7 @@ const renderItem = ({ item }) => {
   return (
     <View style={{justifyContent:"center", margin: "10%", marginTop:2, maxHeight:350}}>
       <TouchableOpacity onPress={()=> viewPost(item.id, item.title, item.body)}
-      style={{borderWidth:1, borderRadius:"5", padding:"4%"}}>
+      style={{borderWidth:1, borderRadius:10, padding:"4%"}}>
       <View style={{flexDirection:"row", marginBottom:"2%"}}>
         <Text numberOfLines={2} style={{fontSize:16, width:"80%"}}> {item.title}</Text>
         <View style={{flexDirection:"column", marginLeft:"4%"}}>

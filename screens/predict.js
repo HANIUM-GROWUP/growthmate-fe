@@ -1,49 +1,95 @@
 import axios from 'axios';
-import React, { PureComponent, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 
 import API from '../api';
+import {LineChart} from "react-native-chart-kit";
 import Plotly from 'react-native-plotly';
 
 // 성장 예측 그래프, 오각형, 성장성 지수
 const Predict = () => {
-  let growth = "성장률";
-  let effiency = "효율성";
-  let profitability = "수익성";
-  let technology = "기술력";
-  let financialStability = "재무성";
 
+
+  // 성장 예측 그래프
+  let years = [];
+  let sales = [];
+  const [graph, setGraph] = useState([[],[0,0,0,0,0]]); // 차트에 들어갈 data 지정
+
+  const getGraphData = async() => {
+    axios.get(`https://growthmate.link/api/v1/companies/${company_id}/growth`)
+    .then(function (response) {
+      console.log(response.data);
+      for(let i=0; i<response.data.length; i++){
+        years[i] = response.data[i].year;
+        sales[i] = response.data[i].sales;
+      }
+      setGraph([years, sales]);
+    });
+    };
+    console.log("graph: ", graph);
+
+    const data = {
+      //labels: ["2018", "2019", "2020", "2021", "2022", "2023"],
+      labels: ["2018", "2019", "2020", "2021", "2022"],
+      datasets: [
+        {
+          data:[graph[1][4], graph[1][3], graph[1][2], graph[1][1], graph[1][0]],
+          color: (opacity = 1) => `rgba(127, 186, 226, 1)`,
+          strokeWidth: 3 // optional
+        },
+    
+      ],
+      //legend: ["예측 그래프"] // optional
+    };
+    const chartConfig = {
+      backgroundGradientFrom: "white",
+      backgroundGradientFromOpacity: 1,
+      backgroundGradientTo: "white",
+      backgroundGradientToOpacity: 1,
+      color: (opacity = 1) => `rgba(55, 55, 55, ${opacity})`,
+      strokeWidth: 3,
+      barPercentage: 11,
+      useShadowColorFromDataset: true,
+    };
+
+
+  //오각형 지표
+  let growth = "성장률";
+  let efficiency = "효율성";
+  let profitability = "수익성";
+  let businessPerformance = "영업성과";
+  let stability = "안정성";
+
+  const [five, setFive] = useState([]); // 차트에 들어갈 data 지정
+
+  const getFiveData = async() => {
   axios.get(`https://growthmate.link/api/v1/companies/${company_id}/analyze`)
   .then(function (response) {
-    console.log(response);
+    console.log(response.data);
     growth = response.data.growth;
-    effiency = response.data.effiency;
+    efficiency = response.data.efficiency;
     profitability = response.data.profitability;
-    technology = response.data.technology;
-    financialStability = response.data.financialStability;
+    businessPerformance = response.data.businessPerformance;
+    stability = response.data.stability;
+
+    setFive([growth, efficiency, profitability, businessPerformance, stability]);
   });
-/*
-  const getData = () => {
-    fetch(`https://growthmate.link/api/v1/companies/${company_id}/analyze`)
-    //fetch(`https://growthmate.link/api/v1/companies/${company_id}/posts?cursor=10&size=10`)
-      .then((res) => res.json())
-      .catch((error) => {
-        Alert.alert("에러가 났습니다");
-        console.error(error);
-      });
-  };
+  }
+
   useEffect(() => {
-    getData();
-  }, []);
-*/
-  const data = [ // 차트에 들어갈 data 지정
+    getGraphData();
+    getFiveData();
+  }
+  , []);
+console.log(five);
+
+  const dataChart = [ // 차트에 들어갈 data
   {
   type: 'scatterpolar', // chart type
-  r: [70, 88, 49, 68, 55, 70], // data
-  //r: [growth, effiency, profitability, technology, financialStability, growth];
+  r: [...five, five[0]],
   theta: ['성장성','안정성','수익성', '효율성', '영업성과', '성장성'], // data category
   fill: 'toself', // fill option
   mode: 'lines',    
@@ -103,24 +149,32 @@ else if(growth > 0){
   setRain(true);
 }
 
+
   return (
     <View style={Styles.container}>    
 <ScrollView>
       <Text style={Styles.HomeText}>성장 예측 그래프</Text>
-      <Text>성장률</Text>
-      <View style={{height:200, width: 300, alignSelf:"center"}}>
-
+      <View style={{height:240, width: 350, alignSelf:"center"}}>
+      <LineChart
+        data={data}
+        width={340}
+        height={200}
+        //fromNumber={0}
+        fromZero
+        chartConfig={chartConfig}
+        debug
+      />
         </View>
 
 
       <Text style={Styles.HomeText}>오각형 지표</Text>
       <View style={{height:250, width: 300, alignSelf:"center"}}>
       <Plotly 
-      data={data} layout={layout}
+      data={dataChart} layout={layout}
        debug enableFullPlotly />
 </View>
 
-<View style={{alignSelf:"center", marginTop:50}}>
+<View style={{alignSelf:"center", marginTop:40}}>
       <Text style={Styles.HomeText}>성장성 지수</Text>
       <View style={{height:200, width: 300, flexDirection:"row", marginTop:20, marginLeft:50}}>
         {sun ? <Feather name="sun" size={40} color="black" /> : null}
@@ -145,5 +199,6 @@ const Styles = StyleSheet.create({
   HomeText: {
     fontSize: 20,
     textAlign: "center",
+    marginTop: 5,
   },
 })
