@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 
@@ -11,7 +10,6 @@ import Plotly from 'react-native-plotly';
 
 // 성장 예측 그래프, 오각형, 성장성 지수
 const Predict = () => {
-
 
   // 성장 예측 그래프
   let years = [];
@@ -24,7 +22,7 @@ const Predict = () => {
       console.log(response.data);
       for(let i=0; i<response.data.length; i++){
         years[i] = response.data[i].year;
-        sales[i] = response.data[i].sales;
+        sales[i] = (response.data[i].sales)/100000000;
       }
       setGraph([years, sales]);
     });
@@ -53,6 +51,7 @@ const Predict = () => {
       strokeWidth: 3,
       barPercentage: 11,
       useShadowColorFromDataset: true,
+      decimalPlaces: 0, // 소수점 자리수
     };
 
 
@@ -154,15 +153,18 @@ else if(growth > 0){
     <View style={Styles.container}>    
 <ScrollView>
       <Text style={Styles.HomeText}>성장 예측 그래프</Text>
-      <View style={{height:240, width: 350, alignSelf:"center"}}>
+      <View style={{height:240, alignSelf:"center"}}>
       <LineChart
         data={data}
+        style={{marginTop: 10}}
         width={340}
         height={200}
         //fromNumber={0}
         fromZero
         chartConfig={chartConfig}
         debug
+        yAxisSuffix='억'
+        
       />
         </View>
 

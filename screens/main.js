@@ -66,6 +66,7 @@ const [dataSales, setDataSales] = useState([]);
 
 const [offset, setOffset] = useState(0);
 const [loading, setLoading] = useState(false);
+const [offsetSales, setOffsetSales] = useState(0);
 
 const Company = (company_id) => {
   navigation.navigate("특정 기업", {company_id: company_id});
@@ -111,9 +112,9 @@ const getDataBySales = () => {
   setLoading(true);
   fetch(`https://growthmate.link/api/v1/companies?cursor=10&size=355&sort=sales`)
     .then((res) => res.json())
-    .then((res) => setDataSales(dataSales.concat(res.slice(offset, offset + LIMIT))))
+    .then((res) => setDataSales(dataSales.concat(res.slice(offsetSales, offsetSales + LIMIT))))
     .then(() => {
-      setOffset(offset + LIMIT);
+      setOffsetSales(offsetSales + LIMIT);
       setLoading(false);
     })
     .catch((error) => {
@@ -121,31 +122,6 @@ const getDataBySales = () => {
       Alert.alert("에러가 났습니다");
     });
 };
-
-/*
-const sortBy = () => {
-  if(sortByDate) {
-    //setData([]);
-    setDataSales([]);
-    getDataBySales();
-    setSortByDate(false);
-    setSortBySales(true);
-  }
-  else {
-    setData([]);
-   // setDataSales([]);
-    getDataByDate();
-    setSortByDate(true);
-    setSortBySales(false);
-  }
-  console.log("sortByDate: ", sortByDate);
-}
-      <TouchableOpacity onPress={() => sortBy()}
-        style={Styles.sort}
-      >
-        <Text style={Styles.sortText}>정렬</Text>
-      </TouchableOpacity>
-*/
 
 const [sortByDate, setSortByDate] = useState(true);
 const [sortBySales, setSortBySales] = useState(false);
@@ -222,33 +198,24 @@ const [items, setItems] = useState([
       setValue={setValue}
       setItems={setItems}
       style={{width: 100, marginLeft:"7%", marginTop:"2%", backgroundColor:"#4FD391", borderRadius:8, borderWidth:0,}}
-      placeholder="정렬"
+      placeholder="설립일순"
       textStyle={{color:"white"}}
       listItemContainerStyle={{backgroundColor:"#4FD391", }}
-      dropDownContainerStyle={{backgroundColor:"#4FD391", width:59, marginLeft:"7%", marginTop:"2%", borderWidth:0,}}
-      //defaultValue={value}
+      dropDownContainerStyle={{backgroundColor:"#4FD391", width:63, marginLeft:"7%", marginTop:"2%", borderWidth:0,}}
+      defaultValue={"date"}
       onChangeValue={(value) => {
         if(value === "date") {
-          //setData([]);
-          navigation.reset({
-            routes: [{ name: 'Main' }],
-          });
-          setDataSales([]);
+          if(sortByDate) return;
+          setData([]);
           getDataByDate();
           setSortByDate(true);
           setSortBySales(false);
-          
-          console.log("sortByDate: ", sortByDate);
         }
-        else {
-          navigation.reset({
-            routes: [{ name: 'Main', params: { sortBySales: true, sortByDate:false } }],
-          });
-          setData([]);
-          //setDataSales([]);
-          getDataBySales();
+        else {         
+          setDataSales([]);
           setSortByDate(false);
           setSortBySales(true);
+          getDataBySales();
         }
       }}
     />
@@ -259,7 +226,7 @@ const [items, setItems] = useState([
         : null
       }
       </View>
-        <View style={{margin:10}}></View>
+        <View style={{margin:30}}></View>
 
     { sortByDate ?
         <FlatList nestedScrollEnabled 
@@ -269,16 +236,19 @@ const [items, setItems] = useState([
         onEndReached={onEndReached}
         onEndReachedThreshold={0.8}
         ListFooterComponent={loading && <ActivityIndicator />}
-      /> : 
-      <FlatList nestedScrollEnabled 
-      data={dataSales}
-      renderItem={renderItem}
-      keyExtractor={(item) => String(item.id)}
-      onEndReached={onEndReached}
-      onEndReachedThreshold={0.8}
-      ListFooterComponent={loading && <ActivityIndicator />}
-      />
+      /> : null
       }
+      { sortBySales ?
+            <FlatList nestedScrollEnabled 
+            data={dataSales}
+            renderItem={renderItem}
+            keyExtractor={(item) => String(item.id)}
+            onEndReached={onEndReached}
+            onEndReachedThreshold={0.8}
+            ListFooterComponent={loading && <ActivityIndicator />}
+            />
+    : null  
+    }
 
 
     </View>

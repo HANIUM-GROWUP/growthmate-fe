@@ -64,26 +64,25 @@ const Intro = () => {
 
     return resultString;
 }
-console.log(numberToKorean(info[3]));
 
   return (
     <View style={Styles.container}>
 
       <Text>회사 설립일</Text>
-      <Text>{info[0]}</Text>
+      <Text style={{fontSize:15}}>{info[0]}</Text>
 
       <View style={{height: 30}}></View>
 
       <Text>주소</Text>
-      <Text>{info[1]}</Text>
+      <Text style={{fontSize:15}}>{info[1]}</Text>
       <View style={{height: 30}}></View>
 
       <Text>직원수</Text>
-      <Text>약 {info[2]}명</Text>
+      <Text style={{fontSize:15}}>약 {info[2]}명</Text>
       <View style={{height: 30}}></View>
 
       <Text>매출액</Text>
-      <Text>{numberToKorean(info[3])}원</Text>
+      <Text style={{fontSize:15}}>{numberToKorean(info[3])}원</Text>
     </View>
   )
 }
