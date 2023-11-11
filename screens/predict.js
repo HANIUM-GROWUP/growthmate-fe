@@ -171,6 +171,7 @@ const Styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     flex: 1,
+    marginTop:"4%",
   },
   HomeText: {
     fontSize: 20,

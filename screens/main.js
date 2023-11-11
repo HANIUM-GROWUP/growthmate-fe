@@ -77,7 +77,7 @@ const Company = (company_id) => {
 
 const renderItem = ({ item }) => {
   return (
-    <View style={{justifyContent:"center", margin: "2%", marginTop:2, height:105}}>
+    <View style={{justifyContent:"center", margin: "2%", marginTop:2, height:100}}>
       <TouchableOpacity onPress={()=> Company(item.companyId)}
       style={{padding:"2%"}}>
       <View style={{flexDirection:"row", marginBottom:"2%", marginLeft:"2%"}}>
@@ -85,7 +85,7 @@ const renderItem = ({ item }) => {
         <View style={{width:80, height:80, alignItems:"center", paddingTop:"5%", opacity:0.5}}><FontAwesome5 name="building" size={24} color="black"/></View> : 
         <Image source={{uri: item.imageUrl}} style={{width:80, borderRadius:10,}}/>
         }
-        <View style={{flexDirection:"column", marginLeft:"6%", marginTop:11}}>
+        <View style={{flexDirection:"column", marginLeft:"6%", marginTop:11, width: "70%"}}>
         <Text style={{fontSize:16, fontWeight: 'bold'}}>{item.name}</Text>
         <Text style={{fontSize:13, marginTop:9}}>{item.businessType}</Text>
       </View></View>
@@ -97,7 +97,7 @@ const renderItem = ({ item }) => {
 // 설립일순 정렬(default)
 const getDataByDate = () => {
   setLoading(true);
-  fetch(`https://growthmate.link/api/v1/companies?cursor=10&size=380&sort=establisDate`)
+  fetch(`https://growthmate.link/api/v1/companies?cursor=10&size=380&sort=establishmentDate`)
     .then((res) => res.json())
     .then((res) => setData(data.concat(res.slice(offset, offset + LIMIT))))
     .then(() => {
@@ -166,7 +166,7 @@ const [items, setItems] = useState([
       <Text style={Styles.TitleText}>GrowthMate</Text>
       <TouchableOpacity style={{alignSelf:"center", marginLeft:"15%",}}
         onPress={() => !isLogin
-           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo, accessToken: accessToken})}
+           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo})}
        >
       <AntDesign name="user" size={33} color="black" /></TouchableOpacity>
 </View> :
@@ -175,7 +175,7 @@ const [items, setItems] = useState([
       <Text style={Styles.TitleText}>GrowthMate</Text>
       <TouchableOpacity style={{alignSelf:"center", marginLeft:"15%",}}
         onPress={() => !isLogin
-           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo, accessToken: accessToken})}
+           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo})}
        >
       <AntDesign name="user" size={33} color="black" /></TouchableOpacity>
 </View>
@@ -189,11 +189,11 @@ const [items, setItems] = useState([
       setOpen={setOpen}
       setValue={setValue}
       setItems={setItems}
-      style={{width: "28%", marginLeft:"67%", marginTop:"2%", backgroundColor:"#4FD391", borderRadius:8, borderWidth:0,}}
+      style={{width: "29%", marginLeft:"67%", marginTop:"2%", backgroundColor:"#4FD391", borderRadius:8, borderWidth:0,}}
       placeholder="설립일순"
       textStyle={{color:"white"}}
-      listItemContainerStyle={{backgroundColor:"#4FD391", }}
-      dropDownContainerStyle={{backgroundColor:"#4FD391", width:"14%", marginLeft:"67%", marginTop:"2%", borderWidth:0,}}
+      listItemContainerStyle={{backgroundColor:"#4FD391",}}
+      dropDownContainerStyle={{backgroundColor:"#4FD391", width:"0%", marginLeft:"67%", marginTop:"2%", borderWidth:0,}}
       defaultValue={"date"}
       onChangeValue={(value) => {
         if(value === "date") {
@@ -258,10 +258,11 @@ const Styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    marginTop:"2%"
   },
 
   TitleText: {
-    fontSize: 30,
+    fontSize: 28,
     alignSelf:"center",
     marginLeft:"20%",
   },
@@ -301,7 +302,7 @@ const Styles = StyleSheet.create({
     },
     dropdown_container: {
       zIndex: 100,
-      marginTop: 12,
+      marginTop: 10,
     },
 
 })

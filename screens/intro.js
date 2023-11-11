@@ -59,7 +59,9 @@ const Intro = () => {
 
     for (let i = 0; i < resultArray.length; i++){
         if(!resultArray[i]) continue;
-        resultString = String(resultArray[i]) + unitWords[i] + resultString;
+        resultString = String(resultArray[i]) + unitWords[i] +' '+ resultString;
+        if(i==0) // 일의 자리까지
+        resultString = '';
     }
 
     if(number == 0 || number == null) {
@@ -72,7 +74,7 @@ const Intro = () => {
   return (
     <View style={Styles.container}>
       <View style={{flexDirection:"row"}}>
-      <View style={{width:70}}>
+      <View style={{width:68}}>
       <Text style={{color:"gray"}}>설립일</Text>
       </View>
       <Text style={{fontSize:15}}>{info[0]}</Text>
@@ -80,7 +82,7 @@ const Intro = () => {
       <View style={{height: 30}}></View>
 
       <View style={{flexDirection:"row"}}>
-      <View style={{width:70}}>
+      <View style={{width:68}}>
       <Text style={{color:"gray"}}>주소</Text>
       </View>
       <Text style={{fontSize:15, marginRight:7}}>{info[1]}</Text>
@@ -88,7 +90,7 @@ const Intro = () => {
       <View style={{height: 30}}></View>
 
       <View style={{flexDirection:"row"}}>
-      <View style={{width:70}}>
+      <View style={{width:68}}>
       <Text style={{color:"gray"}}>직원수</Text>
       </View>
       <Text style={{fontSize:15}}>약 {info[2]}명</Text>
@@ -97,7 +99,7 @@ const Intro = () => {
 
 
       <View style={{flexDirection:"row"}}>
-      <View style={{width:70}}>
+      <View style={{width:68}}>
       <Text style={{color:"gray"}}>매출액</Text>
       </View>
       <Text style={{fontSize:15}}>{numberToKorean(info[3])}원</Text>
@@ -114,6 +116,7 @@ const Styles = StyleSheet.create({
     padding: 10,
     marginLeft:"1%",
     marginRight:"18%",
+    marginTop:"3%",
   },
   HomeText: {
     fontSize: 35,

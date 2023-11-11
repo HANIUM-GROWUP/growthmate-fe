@@ -44,7 +44,7 @@ const News = () => {
 
   return (
     <View style={Styles.container}>      
-      <Text style={Styles.title}>기업 뉴스</Text>
+      <Text style={Styles.title}>기업 뉴스 긍부정 비율</Text>
 
       <View style={{backgroundColor:"#E7E7E7", marginHorizontal:"5%", borderRadius:7, paddingVertical:"3%", marginBottom:"6%"}}>
         <View style={{flexDirection:"row", marginLeft:"6%"}}>
@@ -60,14 +60,9 @@ const News = () => {
       </View>      
       </View>
 
-      <Text style={Styles.title}>긍정적 뉴스</Text>
+      <Text style={Styles.title}>뉴스</Text>
       <View style={{height:80}}>
-        <Text>긍정적 뉴스가 없습니다.</Text>
-      </View>
-
-      <Text style={Styles.title}>부정적 뉴스</Text>
-      <View>
-        <Text>부정적 뉴스가 없습니다.</Text>
+        <Text>뉴스가 없습니다.</Text>
       </View>
 
     </View>
@@ -79,9 +74,10 @@ export default News;
 const Styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
+    marginTop:"3%",
   },
   title: {
-    fontSize: 20,
+    fontSize: 19,
     marginLeft:"8%",
     marginTop:"2%",
     marginBottom:"3%",

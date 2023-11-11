@@ -128,55 +128,14 @@ const [userInfo, setUserInfo] = React.useState(null);
   useEffect(() => {
     handleSignInWithGoogle();
   }, [response]);
-
-/*
-  useEffect(() => {
-    if (response?.type === 'success') {
-      id_token = response.params;
-      const auth = getAuth();
-      const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credential);
-
-      console.log("id_token :", id_token);
-      let token = id_token.id_token;
-      console.log("token :", token);
-
-      const LoginOk = async () => {
-        try {
-          const res = await API.post(`https://growthmate.link/auth/login`, {
-            headers: { Authorization: `Bearer ${token}` },
-            accessToken: token,
-          });
-          console.log(res);
-        } catch (error) {
-          console.error("login error :", error);
-        }
-      };
-      LoginOk();
-
-  AsyncStorage.setItem('token', JSON.stringify(token));
-
-    }
-  }, [response]); // response가 바뀔 때마다 실행
   
- /* // auth null error
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const { uid, email, displayName, accessToken } = user;
-      console.log("uid :", uid)
-      console.log("email :", email)
-      console.log("displayName :", displayName)
-      console.log("accessToken :", accessToken)
-    }
-  });
-*/
 
 const BackButton = () => {
   if (accessToken!==null) {
-    navigation.navigate("Main", { getuser: "test", user_id: "idtest", accessToken: accessToken });
+    navigation.navigate("Main", { getuser: "test"});
   }
   else{
-  navigation.navigate("Main", { getuser: "not", user_id: "notlogin"});
+  navigation.navigate("Main", { getuser: "not"});
   }
 };
 

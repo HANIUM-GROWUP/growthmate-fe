@@ -30,7 +30,7 @@ const Compare = () => {
   return (
     <View style={Styles.container}>
 
-      <Text style={Styles.HomeText}>{name}은 업종 내에서 {per}%입니다.</Text>
+      <Text style={Styles.HomeText}>{name}은 업종 내에서 상위 {per}%입니다.</Text>
 
       <View style={{alignSelf:"center",}}>
       <BarChart
@@ -76,7 +76,7 @@ const Styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   HomeText: {
-    fontSize: 20,
+    fontSize: 18,
     textAlign: "center",
     marginTop:"4%",
     marginBottom:"7%",

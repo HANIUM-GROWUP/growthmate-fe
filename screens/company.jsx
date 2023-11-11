@@ -22,7 +22,6 @@ const Company = ({navigation, route}) => {
   company_id = params ? params.company_id : null;
   console.log("company_id: ", company_id);
 
-
   let name = "회사명";
   let imageUrl = "image";
   let businessType = "업종";
@@ -116,7 +115,7 @@ if (Platform.OS === 'web') {
         </View>
         </View>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{maxHeight:"26%", borderBottomWidth:0.4}}>
+        <View style={{flexDirection:"row", maxHeight:"26%", borderBottomWidth:0.4, paddingBottom:"3%"}}>
           <TouchableOpacity style={Styles.category} onPress={intro}>
           <Text style={Styles.cateText}>기업 소개</Text>
           </TouchableOpacity>
@@ -132,7 +131,7 @@ if (Platform.OS === 'web') {
           <TouchableOpacity style={Styles.category} onPress={community}>
           <Text style={Styles.cateText}>커뮤니티</Text>
           </TouchableOpacity>
-        </ScrollView>
+        </View>
 
         </View>
         <View style={{flex: 2.4}}>
@@ -212,13 +211,13 @@ const Styles = StyleSheet.create({
     textAlign: "center",
   },
   category: {
-    padding: 9,
+    padding: "2%",
     //width: 88,
     justifyContent: "center",
     //borderBottomWidth: 0.5,
   },
   cateText: {
-    fontSize: 17,
+    fontSize: 16,
     textAlign: "center",
     
   },

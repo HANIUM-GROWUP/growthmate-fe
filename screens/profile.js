@@ -23,7 +23,7 @@ const Profile = ({navigation, route}) => {
     try {
       accessToken = await AsyncStorage.getItem("accessToken");
       memberId = await AsyncStorage.getItem("memberId");
-      getToken();
+      getInfo();
       // 자료가 없을 때 에러처리
     } catch(e) {
       console.log(e);
@@ -31,33 +31,33 @@ const Profile = ({navigation, route}) => {
   };
   asyncAccessToken();
 
-  const getToken= async() => {
-    console.log("test   ", accessToken);
+  let [getinfo, setInfo] = useState([]); // [name, email, picture]
+  const getInfo= async() => {
     if(accessToken == null) {
       console.log("null");
     }
      axios.get(`https://growthmate.link/api/v1/member/me`,
     {
-      headers: {Authorization: `Bearer ${accessToken}`}
+      headers: {
+        Authorization: `Bearer ${accessToken.replace(/"/g, "")}`,
+      },
     })
     .then(function (response) {
-      console.log(response.data);
-      username = response.data.name;
+      getname = response.data.name;
       email = response.data.email;
-      imageUrl = response.data.picture; // 프로필 사진
+      img = response.data.picture;
+      setInfo([getname, email, img]);
     }).catch((err) => {
       console.log("get error: ",err);
   });
   };
 
   useEffect(() => {
-    asyncAccessToken();
+    //asyncAccessToken();
   }, []);
-
-
   
     const BackButton = () => {
-          navigation.navigate("Main",{ getuser: username, addi:"hmmmm" }) // 화면 이동 변수 전달 test
+          navigation.navigate("Main") // 화면 이동 변수 전달 test
       };
 
       const texting = (text) => {
@@ -65,13 +65,13 @@ const Profile = ({navigation, route}) => {
         console.log(username);
       }
 
-      const [username, setUsername] = useState(route.params.info);
+      const [username, setUsername] = useState(getinfo[0]);
+      //console.log(" name: ", username);
 
       // 이름 수정
       const ChangeUsername = () => {
-        if (username.length < 1) {
+        if (username == "") {
           alert("닉네임을 입력해주세요.");
-          //setUsername(false);
         }
         else if (username.length > 10) {
           alert("닉네임은 10자 이내로 입력해주세요.");
@@ -84,6 +84,10 @@ const Profile = ({navigation, route}) => {
         axios.patch(`https://growthmate.link/api/v1/member/me`, {
           memberId: memberId,
           name: username,
+      }, {
+          headers: {
+            Authorization: `Bearer ${accessToken.replace(/"/g, "")}`,
+          },
         })
         .then(function (response) {
           console.log(response);
@@ -96,47 +100,8 @@ const Profile = ({navigation, route}) => {
       }
       
       };
-      console.log("profile name: ", username);
+      //console.log("profile name: ", username);
 
-      const [imageUrl, setImageUrl] = useState(''); // 이미지 주소
-      const [status, requestPermission] = ImagePicker.useCameraPermissions();
-
-      // 이미지 업로드
-      const uploadImage = async () => {
-        if (!status?.granted) {
-          const permission = await requestPermission(); // 카메라 권한 요청
-          if (!permission.granted) {
-            return null;
-          }
-        }
-        const result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
-          aspect: [1, 1],
-          quality: 1,
-        });
-        if (result.cancelled) {
-           return null;
-        }
-        // 이미지 업로드 결과 및 경로
-        console.log(result);
-        setImageUrl(result.uri);
-
-      // 서버에 요청 보내기
-      const localUri = result.uri;
-      const filename = localUri.split('/').pop();
-      const match = /\.(\w+)$/.exec(filename || '');
-      const type = match ? `image/${match[1]}` : `image`;
-      const formData = new FormData();
-      formData.append('image', { uri: localUri, name: filename, type });
-
-      axios.patch(`https://growthmate.link/api/v1/members/me`,
-      {
-        data: {memberId, formData},
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-};
 
 const handleLogout = async () => {
   await AsyncStorage.removeItem("accessToken");
@@ -155,15 +120,12 @@ const handleLogout = async () => {
 
         <Image 
         style={{width:110, height:110, borderRadius:100, alignSelf:"center"}}
-        source={imageUrl ? { uri: imageUrl } : require("../public/src/profile.png")}
+        source={getinfo[2] ? { uri: getinfo[2] } : require("../public/src/profile.png")}
         />
-        <TouchableOpacity style={{paddingTop:"2%", alignSelf:"center"}} onPress={uploadImage}>
-          <Text>이미지 변경</Text>
-        </TouchableOpacity>
 
         <View style={{flexDirection:"row", paddingLeft:"5%", marginTop:"8%"}}>
         <Text style={{fontSize:14, alignSelf:"center",marginRight:"5%"}}>닉네임</Text>
-        <TextInput placeholder={username}  value={username} onChangeText={text => texting(text)}
+        <TextInput placeholder={getinfo[0]}  value={username} onChangeText={text => texting(text)}
         style={{fontSize:16, width:"60%", height:40, marginRight:"3%", backgroundColor: '#e8e8e8', borderRadius:8, padding:10}}></TextInput>
         <TouchableOpacity onPress={() => ChangeUsername()}
         style={{backgroundColor:"blue", borderRadius:8, justifyContent:"center", width:"18%"}}>
@@ -171,9 +133,9 @@ const handleLogout = async () => {
         </TouchableOpacity>
         </View>
         
-        <View style={{flexDirection:"row", paddingLeft:"3%", marginTop:"6%"}}>
+        <View style={{flexDirection:"row", paddingLeft:"3%", marginTop:"6%", alignItems:"center"}}>
         <Text style={{fontSize:14, marginRight:"4%"}}>구글 계정</Text>
-        <Text style={{fontSize:17,}}>example123@gmail.com</Text>
+        <Text style={{fontSize:17,}}>{getinfo[1]}</Text>
         </View>
 
         <TouchableOpacity onPress={() => handleLogout()} style={{marginTop:"15%"}}><Text style={{fontSize:16, textAlign:"center", color:"blue"}}>logout</Text>
