@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -92,9 +93,9 @@ const onEndReached = () => {
 
 
   return (
-    <View style={{maxHeight:485}}>
+    <View style={{maxHeight:485, marginTop:"2%"}}>
           <TouchableOpacity style={Styles.write} onPress={()=>writing()}>
-          <Text style={Styles.writetext}>글 작성</Text>
+          <Entypo name="plus" size={29} color="black" />
           </TouchableOpacity>
           <FlatList nestedScrollEnabled 
         data={data}
@@ -118,14 +119,18 @@ const Styles = StyleSheet.create({
   },
   write: {
     backgroundColor: "lightgreen",
-    marginLeft: "73%",
-    width: "18%",
-    height: 33,
-    borderRadius: 10,
-    display: "flex",
+    marginLeft: "80%",
+    width: 0,
+    height: 0,
+    borderRadius: 15,
+    //display: "flex",
     justifyContent: "center",
-    marginBottom: "3%",
-    marginTop: "3%",
+    //marginBottom: "3%",
+    marginTop: "98%",
+    alignItems: "center",
+    position: "absolute",
+    zIndex: 1,
+    
   },
   writetext: {
     fontSize: 16,

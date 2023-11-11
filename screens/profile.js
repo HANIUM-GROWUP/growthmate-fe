@@ -17,20 +17,45 @@ const Profile = ({navigation, route}) => {
   //let email = "이메일";
   //let imageUrl = null;
 
-    axios.get(`https://growthmate.link/api/v1/members/me`,
+  let accessToken = null;
+  let memberId = null;
+  const asyncAccessToken = async () => {
+    try {
+      accessToken = await AsyncStorage.getItem("accessToken");
+      memberId = await AsyncStorage.getItem("memberId");
+      getToken();
+      // 자료가 없을 때 에러처리
+    } catch(e) {
+      console.log(e);
+    }
+  };
+  asyncAccessToken();
+
+  const getToken= async() => {
+    console.log("test   ", accessToken);
+    if(accessToken == null) {
+      console.log("null");
+    }
+     axios.get(`https://growthmate.link/api/v1/member/me`,
     {
-      headers: {
-        'Authorization': 'Bearer ' + route.params.token
-      }
+      headers: {Authorization: `Bearer ${accessToken}`}
     })
     .then(function (response) {
-      console.log(response);
+      console.log(response.data);
       username = response.data.name;
       email = response.data.email;
       imageUrl = response.data.picture; // 프로필 사진
-    }
-    )
+    }).catch((err) => {
+      console.log("get error: ",err);
+  });
+  };
 
+  useEffect(() => {
+    asyncAccessToken();
+  }, []);
+
+
+  
     const BackButton = () => {
           navigation.navigate("Main",{ getuser: username, addi:"hmmmm" }) // 화면 이동 변수 전달 test
       };
@@ -56,7 +81,8 @@ const Profile = ({navigation, route}) => {
           alert("닉네임이 변경되었습니다.");
         setUsername(username);
         console.log("save: ",username);
-        axios.patch(`https://growthmate.link/api/v1/members/me`, {
+        axios.patch(`https://growthmate.link/api/v1/member/me`, {
+          memberId: memberId,
           name: username,
         })
         .then(function (response) {
@@ -106,14 +132,14 @@ const Profile = ({navigation, route}) => {
 
       axios.patch(`https://growthmate.link/api/v1/members/me`,
       {
-        data: formData,
+        data: {memberId, formData},
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
 };
 
 const handleLogout = async () => {
-  await AsyncStorage.removeItem("token");
+  await AsyncStorage.removeItem("accessToken");
 };
 
     return (
@@ -125,7 +151,7 @@ const handleLogout = async () => {
         </TouchableOpacity>
 
         <Text style={Styles.HomeText}>내 프로필</Text>
-        <View style={{ paddingBottom:"0%",padding:"10%"}}>
+        <View style={{padding:"10%"}}>
 
         <Image 
         style={{width:110, height:110, borderRadius:100, alignSelf:"center"}}
@@ -140,7 +166,7 @@ const handleLogout = async () => {
         <TextInput placeholder={username}  value={username} onChangeText={text => texting(text)}
         style={{fontSize:16, width:"60%", height:40, marginRight:"3%", backgroundColor: '#e8e8e8', borderRadius:8, padding:10}}></TextInput>
         <TouchableOpacity onPress={() => ChangeUsername()}
-        style={{backgroundColor:"blue", borderRadius:10, justifyContent:"center", width:"18%"}}>
+        style={{backgroundColor:"blue", borderRadius:8, justifyContent:"center", width:"18%"}}>
         <Text style={{fontSize:16, color:"white", textAlign:"center",}}>수정</Text>
         </TouchableOpacity>
         </View>
@@ -150,7 +176,8 @@ const handleLogout = async () => {
         <Text style={{fontSize:17,}}>example123@gmail.com</Text>
         </View>
 
-        <Button title="logout" onPress={() => handleLogout()} />
+        <TouchableOpacity onPress={() => handleLogout()} style={{marginTop:"15%"}}><Text style={{fontSize:16, textAlign:"center", color:"blue"}}>logout</Text>
+        </TouchableOpacity>
         </View>
       </View></SafeAreaView>
     )

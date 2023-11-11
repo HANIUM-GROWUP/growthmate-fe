@@ -24,6 +24,22 @@ WebBrowser.maybeCompleteAuthSession();
 
 const Signin = ({navigation, route}) => {
   let token = null;
+  let name, email, pictureUrl;
+
+  let accessToken = null;
+  let memberId = 0;
+
+  const asyncAccessToken = async () => {
+    try {
+      accessToken = await AsyncStorage.getItem("accessToken");
+      console.log("access: ", accessToken);
+      // 자료가 없을 때 에러처리
+    } catch(e) {
+      console.log(e);
+    }
+  };
+  asyncAccessToken();
+  
 
 const url = "https://auth.expo.io/@dhdld/growup"; // redirect url
 const [request, response, promptAsync] = Google.useAuthRequest({
@@ -46,9 +62,11 @@ const [userInfo, setUserInfo] = React.useState(null);
       if (response?.type === "success") {
         // 인증 요청에 대한 응답이 성공이면, 토큰을 이용하여 유저 정보를 가져옴.
         await getUserInfo(response.authentication?.accessToken);
-        console.log("accessToken: ",response.authentication?.accessToken);
-        token = response.authentication?.accessToken;
-        await AsyncStorage.setItem("token", JSON.stringify(token));
+        //console.log("accessToken: ",response.authentication?.accessToken);
+        //token = response.authentication?.accessToken;
+        console.log("name: ", name, email, pictureUrl);
+        //await AsyncStorage.setItem("token", JSON.stringify(token));
+        await toBack();
       }
     } else {
       // 유저 정보가 이미 있으면, 유저 정보를 가져옴.
@@ -56,6 +74,27 @@ const [userInfo, setUserInfo] = React.useState(null);
     }
     
   };
+
+  // 백엔드에 유저 정보를 보내는 함수
+  const toBack = async() => {
+    axios.post('https://growthmate.link/api/v1/member/login', {
+      registrationId: "google",
+      name,
+      email,
+      pictureUrl,
+  }
+  ).then((res) => {
+      console.log(res.data);
+      accessToken = res.data.accessToken;
+      memberId = res.data.memberId;
+      console.log("accessToken: ", accessToken);
+      AsyncStorage.setItem("accessToken", JSON.stringify(accessToken));
+      AsyncStorage.setItem("memberId", JSON.stringify(memberId));
+  }).catch((err) => {
+      console.log("error: ",err);
+  });
+  }
+
 
   // 토큰을 이용하여 유저 정보를 가져오는 함수
   const getUserInfo = async (token) => {
@@ -71,6 +110,10 @@ const [userInfo, setUserInfo] = React.useState(null);
       // 유저 정보를 AsyncStorage에 저장, 상태업뎃
       await AsyncStorage.setItem("@user", JSON.stringify(userInfoResponse));
       setUserInfo(userInfoResponse);
+      name = userInfoResponse.name;
+      email = userInfoResponse.email;
+      pictureUrl = userInfoResponse.picture;
+
     } catch (e) {
       console.log(e);
     }
@@ -129,8 +172,8 @@ const [userInfo, setUserInfo] = React.useState(null);
 */
 
 const BackButton = () => {
-  if (token!==null) {
-    navigation.navigate("Main", { getuser: "test", user_id: "idtest", token: token });
+  if (accessToken!==null) {
+    navigation.navigate("Main", { getuser: "test", user_id: "idtest", accessToken: accessToken });
   }
   else{
   navigation.navigate("Main", { getuser: "not", user_id: "notlogin"});

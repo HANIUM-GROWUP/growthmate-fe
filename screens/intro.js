@@ -13,8 +13,12 @@ const Intro = () => {
   const getData = async() => {
   axios.get(`https://growthmate.link/api/v1/companies/${company_id}`)
   .then(function (response) {
-    //console.log(response);
-    establishmentDate = response.data.establishmentDate;
+    establishmentDate = response.data.establishmentDate.slice(0,10);
+    let year = establishmentDate.slice(0,4);
+    let month = establishmentDate.slice(5,7);
+    let day = establishmentDate.slice(8,10);
+    establishmentDate = year+"년 "+month+"월 "+day+"일";
+    
     address = response.data.address;
     employeeNumber = response.data.employeeNumber;
     sales = response.data.sales;
@@ -67,22 +71,37 @@ const Intro = () => {
 
   return (
     <View style={Styles.container}>
-
-      <Text>회사 설립일</Text>
+      <View style={{flexDirection:"row"}}>
+      <View style={{width:70}}>
+      <Text style={{color:"gray"}}>설립일</Text>
+      </View>
       <Text style={{fontSize:15}}>{info[0]}</Text>
-
+      </View>
       <View style={{height: 30}}></View>
 
-      <Text>주소</Text>
-      <Text style={{fontSize:15}}>{info[1]}</Text>
+      <View style={{flexDirection:"row"}}>
+      <View style={{width:70}}>
+      <Text style={{color:"gray"}}>주소</Text>
+      </View>
+      <Text style={{fontSize:15, marginRight:7}}>{info[1]}</Text>
+      </View>
       <View style={{height: 30}}></View>
 
-      <Text>직원수</Text>
+      <View style={{flexDirection:"row"}}>
+      <View style={{width:70}}>
+      <Text style={{color:"gray"}}>직원수</Text>
+      </View>
       <Text style={{fontSize:15}}>약 {info[2]}명</Text>
+      </View>
       <View style={{height: 30}}></View>
 
-      <Text>매출액</Text>
+
+      <View style={{flexDirection:"row"}}>
+      <View style={{width:70}}>
+      <Text style={{color:"gray"}}>매출액</Text>
+      </View>
       <Text style={{fontSize:15}}>{numberToKorean(info[3])}원</Text>
+    </View>
     </View>
   )
 }
@@ -93,6 +112,8 @@ const Styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     padding: 10,
+    marginLeft:"1%",
+    marginRight:"18%",
   },
   HomeText: {
     fontSize: 35,

@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../api';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 import Intro from "./intro";
 import Community from './community';
@@ -105,7 +106,10 @@ if (Platform.OS === 'web') {
       <Ionicons name="chevron-back" size={33} color="black" />
       </TouchableOpacity>
       <View style={{flexDirection:"row", paddingBottom:"2%", padding:"4%", marginLeft:"4%", paddingTop:"2%"}}>
-      <Image source={{uri: `${info[1]}`}} style={{width:100, height:100}}/>
+      { info[1] != "" ?
+        <Image source={{uri: `${info[1]}`}} style={{width:100, height:100}}/>
+      : <View style={{width:100, height:100, alignItems:"center", paddingTop:"11%", opacity:0.5}}><FontAwesome5 name="building" size={26} color="black" /></View>
+      }
       <View style={{flexDirection:"column", paddingLeft:"7%", paddingTop:"5%", flex:1}}>
       <Text style={{fontSize:20, paddingBottom:"9%"}}>{info[0]}</Text>
       <Text style={{fontSize:15}}>{info[2]}</Text>
@@ -208,9 +212,10 @@ const Styles = StyleSheet.create({
     textAlign: "center",
   },
   category: {
-    padding: 14,
+    padding: 9,
     //width: 88,
     justifyContent: "center",
+    //borderBottomWidth: 0.5,
   },
   cateText: {
     fontSize: 17,

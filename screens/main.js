@@ -15,6 +15,8 @@ import { AntDesign } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
 import Company from "./company";
 import DropDownPicker from "react-native-dropdown-picker";
+import { AccessTokenRequest } from "expo-auth-session";
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const Main = ({navigation, route}) => {
 
@@ -26,23 +28,24 @@ const Main = ({navigation, route}) => {
   const userInfo = params ? params.getuser : null;
   console.log("info: ", userInfo);
 
-  let token = null;
-
-  const asyncToken = async () => {
+  let accessToken = null;
+  let memberId = null;
+  const asyncAccessToken = async () => {
     try {
-      token = await AsyncStorage.getItem("token");
-      console.log("token: ", token);
+      accessToken = await AsyncStorage.getItem("accessToken");
+      memberId = await AsyncStorage.getItem("memberId");
+      console.log("access: ", accessToken);
       // 자료가 없을 때 에러처리
     } catch(e) {
       console.log(e);
     }
   };
-  asyncToken();
+  asyncAccessToken();
 
   // 로그인 여부
 const [isLogin, setIsLogin] = useState(false); 
 const getLogin = async () => {
-	if(await AsyncStorage.getItem('token')!== null){
+	if(await AsyncStorage.getItem('accessToken')!== null){
 		setIsLogin(true);
     console.log("async 로그인 됨");
 	}
@@ -74,13 +77,13 @@ const Company = (company_id) => {
 
 const renderItem = ({ item }) => {
   return (
-    <View style={{justifyContent:"center", margin: "2%", marginTop:2, maxHeight:330}}>
+    <View style={{justifyContent:"center", margin: "2%", marginTop:2, height:105}}>
       <TouchableOpacity onPress={()=> Company(item.companyId)}
       style={{padding:"2%"}}>
       <View style={{flexDirection:"row", marginBottom:"2%", marginLeft:"2%"}}>
-        { item.imageUrl === "" ? <View style={{width:80, height:80}}></View> : 
-        <Image source={{uri: item.imageUrl}} style={{width:78, height:78, 
-          borderRadius:10,}}/>
+        { item.imageUrl === "" ? 
+        <View style={{width:80, height:80, alignItems:"center", paddingTop:"5%", opacity:0.5}}><FontAwesome5 name="building" size={24} color="black"/></View> : 
+        <Image source={{uri: item.imageUrl}} style={{width:80, borderRadius:10,}}/>
         }
         <View style={{flexDirection:"column", marginLeft:"6%", marginTop:11}}>
         <Text style={{fontSize:16, fontWeight: 'bold'}}>{item.name}</Text>
@@ -88,13 +91,13 @@ const renderItem = ({ item }) => {
       </View></View>
       </TouchableOpacity>
     </View>
-  );
+  ); 
 };
 
 // 설립일순 정렬(default)
 const getDataByDate = () => {
   setLoading(true);
-  fetch(`https://growthmate.link/api/v1/companies?cursor=10&size=355&sort=establisDate`)
+  fetch(`https://growthmate.link/api/v1/companies?cursor=10&size=380&sort=establisDate`)
     .then((res) => res.json())
     .then((res) => setData(data.concat(res.slice(offset, offset + LIMIT))))
     .then(() => {
@@ -110,7 +113,7 @@ const getDataByDate = () => {
 // 매출액순 정렬
 const getDataBySales = () => {
   setLoading(true);
-  fetch(`https://growthmate.link/api/v1/companies?cursor=10&size=355&sort=sales`)
+  fetch(`https://growthmate.link/api/v1/companies?cursor=10&size=380&sort=sales`)
     .then((res) => res.json())
     .then((res) => setDataSales(dataSales.concat(res.slice(offsetSales, offsetSales + LIMIT))))
     .then(() => {
@@ -163,33 +166,22 @@ const [items, setItems] = useState([
       <Text style={Styles.TitleText}>GrowthMate</Text>
       <TouchableOpacity style={{alignSelf:"center", marginLeft:"15%",}}
         onPress={() => !isLogin
-           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo, token: token})}
+           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo, accessToken: accessToken})}
        >
       <AntDesign name="user" size={33} color="black" /></TouchableOpacity>
 </View> :
-     <View style={{ flexDirection: "row", width:"100%", height:45, justifyContent:"center",
+     <View style={{ flexDirection: "row", width:"100%", height:"6%", justifyContent:"center",
     }}>
       <Text style={Styles.TitleText}>GrowthMate</Text>
       <TouchableOpacity style={{alignSelf:"center", marginLeft:"15%",}}
         onPress={() => !isLogin
-           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo, token: token})}
+           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo, accessToken: accessToken})}
        >
       <AntDesign name="user" size={33} color="black" /></TouchableOpacity>
 </View>
-}
-        <SearchBar
-          round
-          lightTheme
-          containerStyle={{backgroundColor: 'white',
-          borderBottomColor: 'transparent',
-          borderTopColor: 'transparent'
-        }}
-          searchIcon={{ size: 24 }}
-          onChangeText={(text) => searchFilterFunction(text)}
-          onClear={(text) => searchFilterFunction('')}
-          placeholder="Search..."
-        />     
+}    
 
+      <View style={Styles.dropdown_container}>
       <DropDownPicker
       open={open}
       value={value}
@@ -197,11 +189,11 @@ const [items, setItems] = useState([
       setOpen={setOpen}
       setValue={setValue}
       setItems={setItems}
-      style={{width: 100, marginLeft:"7%", marginTop:"2%", backgroundColor:"#4FD391", borderRadius:8, borderWidth:0,}}
+      style={{width: "28%", marginLeft:"67%", marginTop:"2%", backgroundColor:"#4FD391", borderRadius:8, borderWidth:0,}}
       placeholder="설립일순"
       textStyle={{color:"white"}}
       listItemContainerStyle={{backgroundColor:"#4FD391", }}
-      dropDownContainerStyle={{backgroundColor:"#4FD391", width:63, marginLeft:"7%", marginTop:"2%", borderWidth:0,}}
+      dropDownContainerStyle={{backgroundColor:"#4FD391", width:"14%", marginLeft:"67%", marginTop:"2%", borderWidth:0,}}
       defaultValue={"date"}
       onChangeValue={(value) => {
         if(value === "date") {
@@ -218,7 +210,7 @@ const [items, setItems] = useState([
           getDataBySales();
         }
       }}
-    />
+    /></View>
 
       <View>
       { isWeb ? 
@@ -226,7 +218,7 @@ const [items, setItems] = useState([
         : null
       }
       </View>
-        <View style={{margin:30}}></View>
+        
 
     { sortByDate ?
         <FlatList nestedScrollEnabled 
@@ -306,6 +298,10 @@ const Styles = StyleSheet.create({
     comptext: {
         fontSize: 15,
         color: 'black',
+    },
+    dropdown_container: {
+      zIndex: 100,
+      marginTop: 12,
     },
 
 })

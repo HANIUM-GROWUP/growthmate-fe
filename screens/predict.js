@@ -14,27 +14,28 @@ const Predict = () => {
   // 성장 예측 그래프
   let years = [];
   let sales = [];
-  const [graph, setGraph] = useState([[],[0,0,0,0,0]]); // 차트에 들어갈 data 지정
+  const [graph, setGraph] = useState([[],[0]]); // 차트에 들어갈 data 지정
 
   const getGraphData = async() => {
     axios.get(`https://growthmate.link/api/v1/companies/${company_id}/growth`)
     .then(function (response) {
       console.log(response.data);
-      for(let i=0; i<response.data.length; i++){
-        years[i] = response.data[i].year;
-        sales[i] = (response.data[i].sales)/100000000;
-      }
+        for(let i=0; i<response.data.length; i++){
+          if(response.data[i].sales != 0){
+          years.push(response.data[i].year);
+          sales.push(response.data[i].sales/100000000);
+          }
+    }
       setGraph([years, sales]);
     });
     };
     console.log("graph: ", graph);
 
     const data = {
-      //labels: ["2018", "2019", "2020", "2021", "2022", "2023"],
-      labels: ["2018", "2019", "2020", "2021", "2022"],
+      labels: graph[0],
       datasets: [
         {
-          data:[graph[1][4], graph[1][3], graph[1][2], graph[1][1], graph[1][0]],
+          data: graph[1],
           color: (opacity = 1) => `rgba(127, 186, 226, 1)`,
           strokeWidth: 3 // optional
         },
@@ -132,28 +133,12 @@ const layout = { // data를 꾸며주는 layout을 지정!
   
 }
 
-
-// 성장성 지수
-const [sun, setSun] = useState(true); // test 중. 나중에 false로 변경
-const [cloud, setCloud] = useState(false);
-const [rain, setRain] = useState(false);
-
-if(growth > 70){
-  setSun(true);
-}
-else if(growth > 50){
-  setCloud(true);
-}
-else if(growth > 0){
-  setRain(true);
-}
-
-
   return (
     <View style={Styles.container}>    
 <ScrollView>
-      <Text style={Styles.HomeText}>성장 예측 그래프</Text>
-      <View style={{height:240, alignSelf:"center"}}>
+
+      <Text style={Styles.HomeText}>성장 예측</Text>
+      <View style={{height:240, alignSelf:"center",}}>
       <LineChart
         data={data}
         style={{marginTop: 10}}
@@ -164,10 +149,8 @@ else if(growth > 0){
         chartConfig={chartConfig}
         debug
         yAxisSuffix='억'
-        
       />
         </View>
-
 
       <Text style={Styles.HomeText}>오각형 지표</Text>
       <View style={{height:250, width: 300, alignSelf:"center"}}>
@@ -176,16 +159,7 @@ else if(growth > 0){
        debug enableFullPlotly />
 </View>
 
-<View style={{alignSelf:"center", marginTop:40}}>
-      <Text style={Styles.HomeText}>성장성 지수</Text>
-      <View style={{height:200, width: 300, flexDirection:"row", marginTop:20, marginLeft:50}}>
-        {sun ? <Feather name="sun" size={40} color="black" /> : null}
-        {cloud ? <Fontisto name="cloudy" size={40} color="black" /> : null}
-        {rain ? <Fontisto name="rain" size={40} color="black" /> : null}
-        <Text style={{fontSize:32, textAlign:"center", marginLeft:30}}>27%</Text>
-        </View>
-        </View>
-
+      <View style={{marginBottom:"25%"}}></View>
       </ScrollView>
     </View>
   )
@@ -195,7 +169,7 @@ export default Predict;
 
 const Styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: "white",
     flex: 1,
   },
   HomeText: {
