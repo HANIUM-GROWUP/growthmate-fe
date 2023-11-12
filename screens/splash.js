@@ -5,9 +5,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import SearchHeader from "./searchheader";
-import { SearchContextProvider } from "./SearchContext";
-import { SearchBar } from 'react-native-elements';
 import axios from 'axios';
 import { AntDesign } from '@expo/vector-icons';
 

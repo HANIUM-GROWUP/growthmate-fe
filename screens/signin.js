@@ -17,8 +17,10 @@ import * as WebBrowser from 'expo-web-browser';
 import { ResponseType } from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
 import { getAuth, GoogleAuthProvider, signInWithCredential, onAuthStateChanged } from 'firebase/auth';
-
 import * as AuthSession from 'expo-auth-session';
+
+//import { GoogleSignin } from '@react-native-google-signin/google-signin';
+//GoogleSignin.configure();
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -128,7 +130,7 @@ const [userInfo, setUserInfo] = React.useState(null);
   useEffect(() => {
     handleSignInWithGoogle();
   }, [response]);
-  
+
 
 const BackButton = () => {
   if (accessToken!==null) {

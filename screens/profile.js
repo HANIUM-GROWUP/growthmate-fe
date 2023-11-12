@@ -17,19 +17,21 @@ const Profile = ({navigation, route}) => {
   //let email = "이메일";
   //let imageUrl = null;
 
-  let accessToken = null;
-  let memberId = null;
+  let accessToken = route.params.accessToken;
+  let memberId = route.params.memberId;
+  
   const asyncAccessToken = async () => {
     try {
       accessToken = await AsyncStorage.getItem("accessToken");
       memberId = await AsyncStorage.getItem("memberId");
       getInfo();
+      
       // 자료가 없을 때 에러처리
     } catch(e) {
       console.log(e);
     }
   };
-  asyncAccessToken();
+
 
   let [getinfo, setInfo] = useState([]); // [name, email, picture]
   const getInfo= async() => {
@@ -53,7 +55,7 @@ const Profile = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    //asyncAccessToken();
+    asyncAccessToken();
   }, []);
   
     const BackButton = () => {
@@ -65,8 +67,7 @@ const Profile = ({navigation, route}) => {
         console.log(username);
       }
 
-      const [username, setUsername] = useState(getinfo[0]);
-      //console.log(" name: ", username);
+      const [username, setUsername] = useState(''); // 닉네임
 
       // 이름 수정
       const ChangeUsername = () => {
@@ -78,7 +79,6 @@ const Profile = ({navigation, route}) => {
           setUsername(false);
         }
         else{
-          alert("닉네임이 변경되었습니다.");
         setUsername(username);
         console.log("save: ",username);
         axios.patch(`https://growthmate.link/api/v1/member/me`, {
@@ -90,7 +90,7 @@ const Profile = ({navigation, route}) => {
           },
         })
         .then(function (response) {
-          console.log(response);
+          alert("닉네임이 변경되었습니다.");
         }
         )
         .catch(function (error) {
@@ -98,9 +98,7 @@ const Profile = ({navigation, route}) => {
         }
         );
       }
-      
       };
-      //console.log("profile name: ", username);
 
 
 const handleLogout = async () => {

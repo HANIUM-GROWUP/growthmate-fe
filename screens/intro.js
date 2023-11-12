@@ -39,7 +39,6 @@ const Intro = () => {
     getData();
   }
   , []);
-  console.log("info",info);
 
   function numberToKorean(number){ // 매출액 억단위 계산
     let inputNumber  = number < 0 ? false : number;

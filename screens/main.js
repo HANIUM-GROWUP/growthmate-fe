@@ -5,9 +5,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import SearchHeader from "./searchheader";
-import { SearchContextProvider } from "./SearchContext";
-import { SearchBar } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import API from '../api';
@@ -134,6 +131,7 @@ useEffect(() => {
   else getDataByDate();
   console.log("sortByDate: ", sortByDate);
 }, []);
+
 const onEndReached = () => {
   if (loading) {
     return; // 로딩 중 계속 호출(fetch) 되는 것을 막는다.
@@ -166,7 +164,7 @@ const [items, setItems] = useState([
       <Text style={Styles.TitleText}>GrowthMate</Text>
       <TouchableOpacity style={{alignSelf:"center", marginLeft:"15%",}}
         onPress={() => !isLogin
-           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo})}
+           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo, accessToken: accessToken, memberId: memberId})}
        >
       <AntDesign name="user" size={33} color="black" /></TouchableOpacity>
 </View> :
@@ -175,7 +173,7 @@ const [items, setItems] = useState([
       <Text style={Styles.TitleText}>GrowthMate</Text>
       <TouchableOpacity style={{alignSelf:"center", marginLeft:"15%",}}
         onPress={() => !isLogin
-           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo})}
+           ? navigation.navigate("Signin", { screen: 'Signin' }) : navigation.navigate("Profile", { info: userInfo, accessToken: accessToken, memberId: memberId})}
        >
       <AntDesign name="user" size={33} color="black" /></TouchableOpacity>
 </View>
@@ -189,7 +187,7 @@ const [items, setItems] = useState([
       setOpen={setOpen}
       setValue={setValue}
       setItems={setItems}
-      style={{width: "29%", marginLeft:"67%", marginTop:"2%", backgroundColor:"#4FD391", borderRadius:8, borderWidth:0,}}
+      style={{width: "29%", marginLeft:"67%", marginTop:"2%", backgroundColor:"#4FD391", borderRadius:8, borderWidth:0,marginBottom:"2%"}}
       placeholder="설립일순"
       textStyle={{color:"white"}}
       listItemContainerStyle={{backgroundColor:"#4FD391",}}

@@ -41,8 +41,6 @@ useEffect(() => {
   getData();
 }
 , []);
-console.log("info: ", info);
-
   const [introing, setIntro] = useState(true);
   const [predicting, setPredict] = useState(false);
   const [comparing, setCompare] = useState(false);

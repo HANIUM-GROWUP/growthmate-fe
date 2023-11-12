@@ -68,7 +68,6 @@ const Predict = () => {
   const getFiveData = async() => {
   axios.get(`https://growthmate.link/api/v1/companies/${company_id}/analyze`)
   .then(function (response) {
-    console.log(response.data);
     growth = response.data.growth;
     efficiency = response.data.efficiency;
     profitability = response.data.profitability;
@@ -84,7 +83,6 @@ const Predict = () => {
     getFiveData();
   }
   , []);
-console.log(five);
 
   const dataChart = [ // 차트에 들어갈 data
   {

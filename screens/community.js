@@ -65,7 +65,7 @@ const [loading, setLoading] = useState(false);
 
 const getData = () => {
   setLoading(true);
-  fetch("https://jsonplaceholder.typicode.com/posts")
+  fetch("https://jsonplaceholder.typicode.com/posts") // example
   //fetch(`https://growthmate.link/api/v1/companies/${company_id}/posts?cursor=10&size=10`)
     .then((res) => res.json())
     .then((res) => setData(data.concat(res.slice(offset, offset + LIMIT))))

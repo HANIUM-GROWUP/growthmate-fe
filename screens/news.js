@@ -1,11 +1,13 @@
 import React, {useState, useEffect} from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert, TouchableOpacity, ActivityIndicator } from "react-native";
+import { FlatList } from 'react-native-gesture-handler';
 import { Entypo } from '@expo/vector-icons';
 import * as Progress from 'react-native-progress';
 import axios from 'axios';
 
 const News = () => {
 
+  // 기업 뉴스 긍부정 비율
   let positiveRate = 0;
   let negativeRate = 0;
   let [rate, setRate] = useState([positiveRate, negativeRate]);
@@ -18,21 +20,48 @@ const News = () => {
       setRate([positiveRate, negativeRate]);
     });
     };
-    console.log("rate: ", rate);
 
 
-    // companyNewsId, title, description, url, sentiment
+    // 기업 뉴스 리스트 companyNewsId, title, description, url, sentiment
+    const LIMIT = 10;
     const [data, setData] = useState([]);
+    const [offset, setOffset] = useState(0);
+    const [loading, setLoading] = useState(false);
 
-    let [posList, setPosList] = useState([]);
-    let [negList, setNegList] = useState([]);
+      const getList = () => {
+        setLoading(true);
+        fetch(`https://growthmate.link/api/v1/companies/${company_id}/news?cursor=1&size=10`)
+          .then((res) => res.json())
+          .then((res) => setData(data.concat(res.slice(offset, offset + LIMIT))))
+          .then(() => {
+            setOffset(offset + LIMIT);
+            setLoading(false);
+          })
+          .catch((error) => {
+            setLoading(false);
+            Alert.alert("에러가 났습니다");
+          });
+      };
 
-    const getList = async() => {
-      axios.get(`https://growthmate.link/api/v1/companies/${company_id}/news?cursor=1&size=10`)
-      .then(function (response) {
+      const renderItem = ({item}) => {
+        return(
+          <View style={{flexDirection:"row", marginHorizontal:"5%", marginVertical:"2%", backgroundColor:"#E7E7E7", borderRadius:7, paddingVertical:"3%"}}>
+            <View style={{flexDirection:"column", marginLeft:"3%"}}>
+              <Text style={{fontSize:16, fontWeight:"bold"}}>{item.title}</Text>
+              <Text style={{fontSize:14, marginTop:"2%"}}>{item.description}</Text>
+              <Text style={{fontSize:14, marginTop:"2%"}}>{item.url}</Text>
+              <Text style={{fontSize:14, marginTop:"2%"}}>{item.sentiment}</Text>
+            </View>
+          </View>
+        );
+      };
 
-        console.log(response.data);
-      });
+      const onEndReached = () => {
+        if (loading) {
+          return; // 로딩 중 계속 호출(fetch) 되는 것을 막는다.
+        } else {
+          getList();
+        }
       };
 
     useEffect(() => {
@@ -61,9 +90,20 @@ const News = () => {
       </View>
 
       <Text style={Styles.title}>뉴스</Text>
-      <View style={{height:80}}>
+      {data != null ? 
+              <FlatList nestedScrollEnabled 
+              data={data}
+              renderItem={renderItem}
+              keyExtractor={(item) => String(item.id)}
+              onEndReached={onEndReached}
+              onEndReachedThreshold={0.8}
+              ListFooterComponent={loading && <ActivityIndicator />}
+            />
+        :
+        <View style={{height:80}}>
         <Text>뉴스가 없습니다.</Text>
       </View>
+        }
 
     </View>
   )

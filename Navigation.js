@@ -13,7 +13,6 @@ import Splash from "./screens/splash";
 import Main from "./screens/main";
 import Signin from "./screens/signin";
 import Company from "./screens/company";
-
 import Profile from "./screens/profile";
 
 import Intro from "./screens/intro";
@@ -25,8 +24,6 @@ import Community from "./screens/community";
 import WritePost from "./screens/writePost";
 import ViewPost from "./screens/viewPost";
 import EditPost from "./screens/editPost";
-
-import SearchHeader from "./screens/searchheader";
 
 const Stack = createStackNavigator();
 

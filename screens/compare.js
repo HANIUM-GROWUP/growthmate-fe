@@ -6,21 +6,22 @@ import { BarChart } from "react-native-chart-kit";
 const Compare = () => {
   const [rank, setRank] = useState([]);
   let name = "회사이름";
-  let my = "나";
-  let best = 261109107640.991/100000000; //상위 25%
-  let avg = 90238613585.7056/100000000; //평균
-  let per = "퍼센트";
+  let my = "나"; // 우리 회사 매출액
+  let best = 261109107640.991/100000000; //상위 25% 매출액
+  let avg = 90238613585.7056/100000000; //평균 매출액
+  let per = "퍼센트"; // 우리 회사 매출액 상위 퍼센트
 
   const getData = async() => {
   axios.get(`https://growthmate.link/api/v1/companies/${company_id}/comparison`)
   .then(function (response) {
-    console.log(response);
+    console.log(response.data);
 
-    my = response.data.my/100000000;
-    per = response.data.per;
+    my = response.data.salesForecast/100000000;
+    per = response.data.salesForecastPercentage;
     setRank([my, per]);
   });
   };
+
   useEffect(() => {
     getData();
   }
