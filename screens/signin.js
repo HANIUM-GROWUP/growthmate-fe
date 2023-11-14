@@ -64,10 +64,9 @@ const [userInfo, setUserInfo] = React.useState(null);
       if (response?.type === "success") {
         // 인증 요청에 대한 응답이 성공이면, 토큰을 이용하여 유저 정보를 가져옴.
         await getUserInfo(response.authentication?.accessToken);
-        //console.log("accessToken: ",response.authentication?.accessToken);
-        //token = response.authentication?.accessToken;
+        console.log("accessToken: ",response.authentication?.accessToken);
+        token = response.authentication?.accessToken;
         console.log("name: ", name, email, pictureUrl);
-        //await AsyncStorage.setItem("token", JSON.stringify(token));
         await toBack();
       }
     } else {
@@ -120,7 +119,6 @@ const [userInfo, setUserInfo] = React.useState(null);
       console.log(e);
     }
   };
-
   const handleLogout = async () => {
     await AsyncStorage.removeItem("@user");
     setUserInfo(null);
@@ -128,6 +126,7 @@ const [userInfo, setUserInfo] = React.useState(null);
 
   // Google 인증 응답이 바뀔때마다 실행
   useEffect(() => {
+    asyncAccessToken();
     handleSignInWithGoogle();
   }, [response]);
 
@@ -151,15 +150,21 @@ const BackButton = () => {
        
       <Text style={Styles.HomeText}>로그인</Text>
 
-      <Text>{JSON.stringify(userInfo, null, 2)}</Text>
-      <Button
+      <TouchableOpacity
         disabled={!request}
         title="Login"
         onPress={() => {
           promptAsync();
         }}
+        style={Styles.loginBox}>
+        <Image style={{width: 30, height: 30, alignSelf:"center", marginBottom: 10, marginLeft:"10%", marginTop:"3%"}}
+        source={require("../public/src/googleLogo.png")}
       />
-      <Button title="logout" onPress={() => handleLogout()} />
+      <Text style={{fontSize:20, textAlignVertical:"center", textAlign:"center", marginLeft:"8%", marginTop:"3%"}}>Google로 시작하기</Text>
+        </TouchableOpacity>
+
+             <TouchableOpacity title="logout" onPress={() => handleLogout()} style={{alignSelf:"center", marginTop:"90%"}}><Text>로그아웃</Text></TouchableOpacity>
+
 
     </View>
     </SafeAreaView>
@@ -186,7 +191,6 @@ const Styles = StyleSheet.create({
     marginTop:"45%", 
     display:"flex",
     flexDirection:"row", 
-    borderWidth:0.6, borderRadius:7, 
     width:"80%", height:"6%"
   },
 

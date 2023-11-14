@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Platform} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -99,7 +99,7 @@ if (Platform.OS === 'web') {
       <View style={Styles.container}>    
       <View style={{flex:1}}> 
       <StatusBar style="auto" />
-      <TouchableOpacity onPress={() => BackButton()}>
+      <TouchableOpacity style={{marginLeft:"1%"}} onPress={() => BackButton()}>
       <Ionicons name="chevron-back" size={33} color="black" />
       </TouchableOpacity>
       <View style={{flexDirection:"row", paddingBottom:"2%", padding:"4%", marginLeft:"4%", paddingTop:"2%"}}>

@@ -14,61 +14,35 @@ import { Octicons } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
 import constants from '../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import API from '../api';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const ViewPost = ({navigation, route}) => {
 
-  let companyId = global.companyId;
+  const {params} = route;
+  post_id = params ? params.post_id : null;
 
-const asyncToken = async () => {
-  try {
-    const token = await AsyncStorage.getItem("token");
-    console.log("token: ", token);
-    // 자료가 없을 때 에러처리
-  } catch(e) {
-    console.log(e);
-  }
-};
-asyncToken();
-
-let writer = "작성자 이름";
-let title = "제목";
-let postContent = "내용";
-let postCreatedDate = "작성 날짜";
-//게시글 상세 조회 
-  axios.get(`https://growthmate.link/api/v1/posts/${post_id}`)
-  .then(function (response) {
-    console.log(response.data);
-    writer = response.data.writer;
-    title = response.data.title;
-    postContent = response.data.content;
-    postCreatedDate = response.data.createdDate;
-    if (response.data.isMine == true) { 
-      setIsMyPost(true);
+  let accessToken = "";
+  let memberId = 0;
+  
+  const asyncAccessToken = async () => {
+    try {
+      accessToken = await AsyncStorage.getItem("accessToken");
+      memberId = await AsyncStorage.getItem("memberId");
+      getPost();
+      // 자료가 없을 때 에러처리
+    } catch(e) {
+      console.log(e);
     }
-  }
-  );
+  };
+  asyncAccessToken();
+
+
 
 let commentId = "댓글 아이디";
 let commentWriter = "댓글 작성자";
 let commentContent = "댓글 내용";
-let commentCreatedDate = "댓글 작성 날짜";
-// 댓글 조회
-  axios.get(`https://growthmate.link/api/v1/posts/${post_id}/comments?cursor=10&size=10`)
-  .then(function (response) {
-    console.log(response);
-    commentId = response.data.commentId;
-    commentWriter = response.data.writer;
-    commentContent = response.data.content;
-    commentCreatedDate = response.data.createdDate;
-    if (response.data.isMine == true) { 
-      setIsMyComment(true);
-  }
-  });
-
-
-  // 댓글 flatlist
+let commentCreateddDate = "댓글 작성 날짜";
+  // 댓글 flatlist commentId, commentWriter, commentContent, commentCreateddDate
 const renderCommentItem = ({ item }) => {
   return (
     <View>
@@ -79,7 +53,7 @@ const renderCommentItem = ({ item }) => {
     </View>
     <View style={{flexDirection:"row", paddingTop:"2%"}}>
         <Text>08/17  </Text> 
-        {isMyComment ? (
+        {item.isMine == "True" ? (
         <View style={{flexDirection:"row", opacity:0.7,}}>
         <TouchableOpacity onPress={editComment}>
         <Text>수정 </Text>
@@ -102,11 +76,12 @@ const [commentData, setData] = useState([]);
 const [offset, setOffset] = useState(0);
 const [loading, setLoading] = useState(false);
 
-const getData = () => {
+const getComment = () => {
   setLoading(true);
-  fetch("https://jsonplaceholder.typicode.com/comments")
+  fetch(`https://growthmate.link/api/v1/posts/${post_id}/comments?cursor=10&size=20`)
     .then((res) => res.json())
-    .then((res) => setData(commentData.concat(res.slice(offset, offset + LIMIT))))
+    .then((res) => 
+    setData(commentData.concat(res.slice(offset, offset + LIMIT))))
     .then(() => {
       setOffset(offset + LIMIT);
       setLoading(false);
@@ -118,30 +93,73 @@ const getData = () => {
 };
 
 useEffect(() => {
-  getData();
+  asyncAccessToken();
+  getPost();
+  //getComment(); 
 }, []);
 const onEndReached = () => {
   if (loading) {
     return; // 로딩 중 계속 호출(fetch) 되는 것을 막는다.
   } else {
-    getData();
+    getComment();
   }
 };
 
 // 글
-const post_id = route.params.post_id;
-title = route.params.title;
-content = route.params.content;
+let writer = "작성자 이름";
+let title = "제목";
+let content = "내용";
+let postCreateDate = "작성 날짜";
 
-console.log("post_id: ", post_id);
-console.log("title: ", title);
+let [info, setInfo] = useState([]);
+//게시글 상세 조회 
+const getPost = async() => {
+  if (accessToken == "") {
+    axios.get(`https://growthmate.link/api/v1/posts/${post_id}`)
+    .then(function (response) {
+      writer = response.data.writer;
+      title = response.data.title;
+      content = response.data.content;
+      postCreateDate = response.data.createDate.slice(0,10).replace(/-/g, ".");
+  
+      setInfo([writer, title, content, postCreateDate]);
+      if (response.data.isMine == true) { 
+        setIsMyPost(true);
+      }
+  }) 
+    .catch(function (error) {
+      console.log("gett", error);
+    });
+  }
+  else {
+  axios.get(`https://growthmate.link/api/v1/posts/${post_id}`,
+  {headers: {
+    Authorization: `Bearer ${accessToken.replace(/"/g, "")}`,
+  }
+})
+  .then(function (response) {
+    writer = response.data.writer;
+    title = response.data.title;
+    content = response.data.content;
+    postCreateDate = response.data.createDate.slice(0,10).replace(/-/g, ".");
 
-const [isMyPost, setIsMyPost] = useState(true); // 내가 쓴 글인지 확인
-const [isMyComment, setIsMyComment] = useState(true); // 내가 쓴 댓글인지 확인
-// test 중이라서 true로 설정해놓음. 나중에 기본값 false로 바꿔야 함.
+    setInfo([writer, title, content, postCreateDate]);
+    if (response.data.isMine == true) { 
+      setIsMyPost(true);
+    }
+}) 
+  .catch(function (error) {
+    console.log("gett", error);
+  });
+}
+};
+
+
+const [isMyPost, setIsMyPost] = useState(false); // 내가 쓴 글인지 확인
+const [isMyComment, setIsMyComment] = useState(false); // 내가 쓴 댓글인지 확인
 
 const editPost = () => {
-  navigation.navigate("EditPost", {post_id: post_id, title: title, content: content});
+  navigation.navigate("EditPost", {post_id: post_id, title: info[1], content: info[2]});
 };
 
 const deletePost = () => {
@@ -149,8 +167,12 @@ const deletePost = () => {
     {text: "Cancel"},
     {text: "Yes", style: "destructive",
     onPress: async() => {
-  axios.delete(`https://growthmate.link/api/v1/posts/{post_id}`);
-  navigation.navigate("특정 기업", {companyId: global.companyId});
+  axios.delete(`https://growthmate.link/api/v1/posts/${post_id}`,
+  {headers: {
+    Authorization: `Bearer ${accessToken.replace(/"/g, "")}`,
+  }
+});
+  navigation.navigate("특정 기업", {company_id: company_id});
     },},
   ]);
 };
@@ -160,7 +182,7 @@ const editComment = () => {
     {text: "Cancel"},
     {text: "Yes",
     onPress: async() => {
-      axios.patch(`https://growthmate.link/api/v1/comments/{comment_id}`) 
+      axios.patch(`https://growthmate.link/api/v1/comments/${comment_id}`) 
 
     },},
   ]);
@@ -171,7 +193,7 @@ const deleteComment = () => {
     {text: "Cancel"},
     {text: "Yes", style: "destructive",
     onPress: async() => {
-      axios.delete(`https://growthmate.link/api/v1/comments/{comment_id}`);
+      axios.delete(`https://growthmate.link/api/v1/comments/${comment_id}`);
       this.refresh();
     },},
   ]);
@@ -181,10 +203,19 @@ const [comment, setComment] = useState('');
 
 // 댓글 등록
 const uploadComment = () => {
+  console.log("댓글 등록", accessToken)
+  if(accessToken == null || accessToken == "") {
+    Alert.alert("로그인이 필요한 서비스입니다.");
+    return;
+  }
+  else {
   alert("댓글을 등록합니다.");
-  axios.post(`https://growthmate.link/api/v1/posts/{post_id}/comments`, {
+  axios.post(`https://growthmate.link/api/v1/posts/${post_id}/comments`, {
     content: comment,
-  })
+  },
+  {headers: {
+    Authorization: `Bearer ${accessToken.replace(/"/g, "")}`,
+    }})
   .then(function (response) {
     console.log(response);
   }
@@ -192,6 +223,7 @@ const uploadComment = () => {
   .catch(function (error) {
     console.log(error);
   });
+  }
 };
 
   return (
@@ -207,10 +239,10 @@ const uploadComment = () => {
 
 <View style={{margin:5}}>
     <View style={{flexDirection:"row"}}>
-        <Text style={{fontSize:20, fontWeight:"bold", width:"80%"}}>{title}</Text>
+        <Text style={{fontSize:20, fontWeight:"bold", width:"80%"}}>{info[1]}</Text>
         <View style={{flexDirection:"column", alignItems:"flex-end"}}>
-        <Text>08/17</Text> 
-        <Text style={{fontSize:14,}}>작성자 이름</Text>
+        <Text>{info[3]}</Text> 
+        <Text style={{fontSize:14,}}>{info[0]}</Text>
 
         {isMyPost ? (
         <View style={{flexDirection:"row", opacity:0.7}}>
@@ -229,11 +261,13 @@ const uploadComment = () => {
 
 
 
-    <Text style={{fontSize:16, marginTop:"5%", marginBottom:"5%"}}>{content}</Text>
+    <Text style={{fontSize:16, marginTop:"5%", marginBottom:"5%"}}>{info[2]}</Text>
 
     <View style={{borderWidth:0.3, margin:"3%"}}></View>
     <Text style={{marginBottom:"4%"}}>comment</Text>
 
+
+{ commentData != null ?
     <FlatList nestedScrollEnabled 
         data={commentData}
         renderItem={renderCommentItem}
@@ -242,58 +276,11 @@ const uploadComment = () => {
         onEndReachedThreshold={0.8}
         ListFooterComponent={loading && <ActivityIndicator />}
       />
-
-
-    <View style={Styles.commentBox}>
-        <View style={{flexDirection:"column", }}>
-        <Text style={{paddingBottom:"3%"}}>작성자</Text>
-    <Text>투자 관련 문의 드립니다.............................</Text>
+      :
+      <View style={{height:80}}>
+      <Text>댓글이 없습니다.</Text>
     </View>
-    <View style={{flexDirection:"row", paddingTop:"2%"}}>
-        <Text>08/17  </Text> 
-        {isMyComment ? (
-        <View style={{flexDirection:"row", opacity:0.7,}}>
-        <TouchableOpacity onPress={editComment}>
-        <Text>수정 </Text>
-        </TouchableOpacity>
-        <Text>|</Text>
-        <TouchableOpacity onPress={deleteComment}>
-        <Text> 삭제</Text>
-        </TouchableOpacity>
-        </View>
-        ) : ( <View></View> )
-        }
-        </View>
-    </View>
-
-    <View style={{borderWidth:0.3, margin:"1%", opacity:0.4}}></View>
-
-    <View style={Styles.commentBox}>
-        <View style={{flexDirection:"column", }}>
-        <Text style={{paddingBottom:"3%"}}>작성자22</Text>
-    <Text>투자 관련 문의 드립니다2</Text>
-    </View>
-    <View style={{flexDirection:"row", paddingTop:"2%"}}>
-        <Text>08/17  </Text> 
-        {isMyComment ? (
-        <View style={{flexDirection:"row", opacity:0.7,}}>
-        <TouchableOpacity onPress={editComment}>
-        <Text>수정 </Text>
-        </TouchableOpacity>
-        <Text>|</Text>
-        <TouchableOpacity onPress={deleteComment}>
-        <Text> 삭제</Text>
-        </TouchableOpacity>
-        </View>
-        ) : ( <View></View> )
-        }
-        </View>
-    </View>
-
-    <View style={{borderWidth:0.3, margin:"1%", opacity:0.4}}></View>
-
-
-
+}
     </View>
     </View>
     </TouchableWithoutFeedback>
@@ -309,6 +296,8 @@ const uploadComment = () => {
         <Text style={{fontSize:16, textAlign:'center', textAlignVertical:"center", color:"white", marginTop:"25%"}}>등록</Text>
         </TouchableOpacity>
         </View>
+
+        <View style={{height:500}}></View>
 
 </KeyboardAvoidingView>
     </View>

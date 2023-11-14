@@ -54,6 +54,7 @@ const getLogin = async () => {
 console.log("isLogin 상태: ", isLogin);
 
 useEffect(() => {
+  asyncAccessToken();
 	getLogin();
 });
 
@@ -196,7 +197,7 @@ const [items, setItems] = useState([
       onChangeValue={(value) => {
         if(value === "date") {
           if(sortByDate) return;
-          setData([]);
+          setData([]); 
           getDataByDate();
           setSortByDate(true);
           setSortBySales(false);

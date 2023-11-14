@@ -14,39 +14,58 @@ const Compare = () => {
   const getData = async() => {
   axios.get(`https://growthmate.link/api/v1/companies/${company_id}/comparison`)
   .then(function (response) {
-    console.log(response.data);
-
     my = response.data.salesForecast/100000000;
-    per = response.data.salesForecastPercentage;
+    per = ((response.data.salesForecastPercentage)*100).toFixed(0);
     setRank([my, per]);
+    console.log(rank);
   });
   };
 
+  const [info, setInfo] = useState([]); // [name] 회사 이름만 
+  const getName = async() => {
+    axios.get(`https://growthmate.link/api/v1/companies/${company_id}`)
+    .then(function (response) {
+      name = response.data.name;
+      let lastChar = name.charCodeAt(name.length - 1)
+      let isThereLastChar = (lastChar - 0xac00) % 28
+      if (isThereLastChar) {
+        name = name + '은'
+      }
+      else {
+        name = name + '는'
+      }
+      setInfo([name]);
+    })
+  }
   useEffect(() => {
     getData();
+    getName();
   }
   , []);
+
+const data = {
+  labels: [
+    '우리 회사',
+    '상위 25%',
+    '평균',
+  ],
+  datasets: [
+    {
+      data: [rank[0], best, avg],
+      color: (opacity = 1) => `rgba(1, 50, 180, 1)`,
+    },
+  ],
+};
 
 
   return (
     <View style={Styles.container}>
 
-      <Text style={Styles.HomeText}>{name}은 업종 내에서 상위 {per}%입니다.</Text>
+      <Text style={Styles.HomeText}>{info[0]} 업종 내 상위 {rank[1]}%입니다.</Text>
 
       <View style={{alignSelf:"center",}}>
       <BarChart
-  data={{
-    labels: [
-      '우리 회사',
-      '상위 25%',
-      '평균',
-    ],
-    datasets: [
-      {
-        data: [49500155092/100000000, best, avg],
-      },
-    ],
-  }}
+  data={data}
   width={320}
   height={220}
   fromZero={true}

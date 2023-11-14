@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
@@ -42,7 +41,7 @@ function StackScreen() {
         <Stack.Screen name="ViewPost" component={ViewPost} options={{title: "post", headerBackTitleVisible:false,
     headerLeft: () => (
         <TouchableOpacity
-            onPress={() => {navigation.navigate("특정 기업", {companyId: global.companyId});}}
+            onPress={() => {navigation.navigate("특정 기업", {company_id: global.company_id});}}
             style={{ marginLeft: 10 }}
         >
             <Ionicons name="chevron-back" size={33} color="black" />

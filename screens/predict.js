@@ -92,7 +92,7 @@ const Predict = () => {
   fill: 'toself', // fill option
   mode: 'lines',    
   line: {
-    color: "#0DBF3C",
+    color: "#03C335",
   },
   }
 ]

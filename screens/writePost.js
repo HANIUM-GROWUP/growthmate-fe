@@ -13,25 +13,30 @@ import axios from 'axios';
 import { API } from '../api';
 import { Octicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { acc } from 'react-native-reanimated';
 
 // 커뮤니티 글 작성 페이지
 
 const WritePost = () => {
   const navigation = useNavigation();
-  const asyncToken = async () => {
-    try {
-      const token = await AsyncStorage.getItem("token");
-      console.log("token: ", token);
-      // 자료가 없을 때 에러처리
-    } catch(e) {
-      console.log(e);
-    }
-  };
-  asyncToken();
   
   const BackButton = () => {
-    navigation.navigate("특정 기업", {companyId: global.companyId});
+    navigation.navigate("특정 기업", {company_id: global.company_id});
 };
+
+let accessToken =null;
+let memberId = 0;
+
+const asyncAccessToken = async () => {
+  try {
+    accessToken = await AsyncStorage.getItem("accessToken");
+    memberId = await AsyncStorage.getItem("memberId");
+    // 자료가 없을 때 에러처리
+  } catch(e) {
+    console.log(e);
+  }
+};
+asyncAccessToken();
 
 // 글 작성 완료 버튼
 const DoneButton = () => {
@@ -44,17 +49,21 @@ const DoneButton = () => {
     return;
   }
   else {
-  axios.post(`https://growthmate.link/v1/companies/${company_id}/posts`, {
+  axios.post(`https://growthmate.link/api/v1/companies/${company_id}/posts`, {
     title: title,
     content: content,
-  })
+  },
+  { headers: {
+    'Authorization': `Bearer ${accessToken.replace(/"/g, "")}`,
+  }}
+  )
   .then(function (response) {
     console.log(response);
   })
   .catch(function (error) {
     console.log(error);
   });
-  navigation.navigate("특정 기업", {companyId: global.companyId});
+  navigation.navigate("특정 기업", {company_id: global.company_id});
   }
 };
 
@@ -109,7 +118,7 @@ const Styles = StyleSheet.create({
   },
   done: {
     backgroundColor: "lightgreen",
-    marginLeft: "27%",
+    marginLeft: "26%",
     width: 50,
     height: 33,
     borderRadius: 10,

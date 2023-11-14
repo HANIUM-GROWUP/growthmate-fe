@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from "react";
 import { View, Text, StyleSheet, Alert, TouchableOpacity, ActivityIndicator } from "react-native";
-import { FlatList } from 'react-native-gesture-handler';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { Entypo } from '@expo/vector-icons';
 import * as Progress from 'react-native-progress';
 import axios from 'axios';
+import { WebView } from 'react-native-webview';
+import * as Linking from 'expo-linking';
 
 const News = () => {
 
@@ -28,12 +30,17 @@ const News = () => {
     const [offset, setOffset] = useState(0);
     const [loading, setLoading] = useState(false);
 
+    const link = (url) => {
+      Linking.openURL(url);
+    }
+
       const getList = () => {
         setLoading(true);
-        fetch(`https://growthmate.link/api/v1/companies/${company_id}/news?cursor=1&size=10`)
+        fetch(`https://growthmate.link/api/v1/companies/${company_id}/news?&size=100`)
           .then((res) => res.json())
           .then((res) => setData(data.concat(res.slice(offset, offset + LIMIT))))
           .then(() => {
+            console.log(data);
             setOffset(offset + LIMIT);
             setLoading(false);
           })
@@ -44,15 +51,22 @@ const News = () => {
       };
 
       const renderItem = ({item}) => {
+        if(item.sentiment == "POSITIVE") item.sentiment = "긍정";
+        else if(item.sentiment == "NEGATIVE") item.sentiment = "부정";
+        else if(item.sentiment == "NEUTRAL") item.sentiment = "중립";
+
         return(
-          <View style={{flexDirection:"row", marginHorizontal:"5%", marginVertical:"2%", backgroundColor:"#E7E7E7", borderRadius:7, paddingVertical:"3%"}}>
-            <View style={{flexDirection:"column", marginLeft:"3%"}}>
-              <Text style={{fontSize:16, fontWeight:"bold"}}>{item.title}</Text>
-              <Text style={{fontSize:14, marginTop:"2%"}}>{item.description}</Text>
-              <Text style={{fontSize:14, marginTop:"2%"}}>{item.url}</Text>
-              <Text style={{fontSize:14, marginTop:"2%"}}>{item.sentiment}</Text>
-            </View>
-          </View>
+          <TouchableOpacity onPress={() => link(item.url)}
+          style={{marginHorizontal:"5%", marginVertical:"2%", backgroundColor:"#F4F4F4", borderRadius:7, padding:"3%", marginHorizontal:"5%", maxHeight:180,}}>
+              <View style={{flexDirection:"row",}}>
+              <Text style={{fontSize:15, fontWeight:"bold", width:"92%"}}>{item.title}</Text>
+              <Text style={{fontSize:12, marginBottom:"2%"}}>{item.sentiment}</Text>
+              </View>
+              <Text style={{fontSize:13, marginTop:"2%"}}>{item.description}</Text>
+              <View style={{marginLeft:"auto", marginRight:"5%"}}>
+              
+              </View>
+          </TouchableOpacity>
         );
       };
 
@@ -72,10 +86,11 @@ const News = () => {
 
 
   return (
-    <View style={Styles.container}>      
+    <View style={Styles.container}>  
+    <ScrollView nestedScrollEnabled>    
       <Text style={Styles.title}>기업 뉴스 긍부정 비율</Text>
 
-      <View style={{backgroundColor:"#E7E7E7", marginHorizontal:"5%", borderRadius:7, paddingVertical:"3%", marginBottom:"6%"}}>
+      <View style={{backgroundColor:"#F4F4F4", marginHorizontal:"5%", borderRadius:7, paddingVertical:"3%", marginBottom:"6%"}}>
         <View style={{flexDirection:"row", marginLeft:"6%"}}>
         <Entypo name="emoji-happy" size={27} color="green" />
         <Progress.Bar progress={rate[0]} width={200} height={27} unfilledColor="#BFBFBF" borderColor="#BFBFBF" borderWidth={0.8} marginLeft="3%"></Progress.Bar>
@@ -89,7 +104,7 @@ const News = () => {
       </View>      
       </View>
 
-      <Text style={Styles.title}>뉴스</Text>
+      <Text style={Styles.listtitle}>뉴스</Text>
       {data != null ? 
               <FlatList nestedScrollEnabled 
               data={data}
@@ -104,7 +119,7 @@ const News = () => {
         <Text>뉴스가 없습니다.</Text>
       </View>
         }
-
+</ScrollView>
     </View>
   )
 }
@@ -117,10 +132,15 @@ const Styles = StyleSheet.create({
     marginTop:"3%",
   },
   title: {
-    fontSize: 19,
+    fontSize: 18,
     marginLeft:"8%",
     marginTop:"2%",
     marginBottom:"3%",
-
+  },
+  listtitle: {
+    fontSize: 18,
+    marginLeft:"8%",
+    marginTop:"2%",
+    marginBottom:"1%",
   },
 })

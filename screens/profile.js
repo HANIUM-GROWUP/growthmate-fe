@@ -103,6 +103,7 @@ const Profile = ({navigation, route}) => {
 
 const handleLogout = async () => {
   await AsyncStorage.removeItem("accessToken");
+  await AsyncStorage.removeItem("memberId");
 };
 
     return (

@@ -17,16 +17,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // 커뮤니티 글 수정 페이지
 
 const EditPost = ({navigation, route}) => {
-  const asyncToken = async () => {
+  const {params} = route;
+  post_id = params ? params.post_id : null;
+
+  let accessToken =null;
+
+  const asyncAccessToken = async () => {
     try {
-      const token = await AsyncStorage.getItem("token");
-      console.log("token: ", token);
+      accessToken = await AsyncStorage.getItem("accessToken");
       // 자료가 없을 때 에러처리
     } catch(e) {
       console.log(e);
     }
   };
-  asyncToken();
+  asyncAccessToken();
+
   
   const BackButton = () => {
     navigation.goBack();
@@ -35,14 +40,12 @@ const EditPost = ({navigation, route}) => {
 const pastTitle = route.params.title;
 const pastContent = route.params.content;
 
-
 const [title, setTitle] = useState(pastTitle);
 const [content, setContent] = useState(pastContent);
 
 
-
 // 글 수정 버튼
-const DoneButton = () => {
+const DoneButton = async() => {
   if (title == '' || content == '') {
     alert("제목과 내용을 모두 입력해주세요.");
     return;
@@ -51,14 +54,17 @@ const DoneButton = () => {
   axios.patch(`https://growthmate.link/api/v1/posts/${post_id}`, {
     title: title,
     content: content,
-  })
+  },
+  {headers: {
+    Authorization: `Bearer ${accessToken.replace(/"/g, "")}`,
+    }})
   .then(function (response) {
     console.log(response);
   })
   .catch(function (error) {
-    console.log(error);
+    console.log("edit: ", error);
   });
-  navigation.navigate("특정 기업", {title: title, content: content, companyId: global.companyId});
+  navigation.navigate("특정 기업", {title: title, content: content, company_id: global.company_id});
   }
 };
   return (
